@@ -53,7 +53,6 @@ set fish_greeting
 set VIRTUAL_ENV_DISABLE_PROMPT "1"
 set -xU MANPAGER "sh -c 'col -bx | bat -l man -p'"
 set -xU MANROFFOPT "-c"
-set -x SHELL /usr/bin/fish
 set -x EDITOR nvim
 
 
@@ -257,25 +256,6 @@ else
     end
 end
 # <<< conda initialize <<<
-
-
-## SSH key handling (optional: keychain)
-if status --is-interactive
-    if type -q keychain
-        # Set up environment from keychain (SSH agent, keys, etc.)
-        eval (keychain --quiet --eval)
-
-        # Source any host-specific fish snippets keychain created.
-        # Files are typically named like ~/.keychain/<hostname>-fish
-        for kc_file in $HOME/.keychain/*-fish
-            if test -f $kc_file
-                source $kc_file
-            end
-        end
-    else
-        echo "warning: keychain not found; SSH keys will not be auto-loaded (install 'keychain' or remove this block)" >&2
-    end
-end
 
 
 ## Fuzzy finder key bindings
