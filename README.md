@@ -12,31 +12,31 @@
 
 ## 安装（使用符号链接）
 
+推荐使用 `-t` 显式指定目标目录，并一次性安装多个分组（group）：
+
 在 `~/configs` 目录下，执行：
 
 ```bash
-stow -Sv shell
-stow -Sv editor
-stow -Sv terminal
+stow -Sv -t "$HOME" shell editor terminal
 ```
 
 说明：
 
+- `-t "$HOME"`：把链接安装到当前用户的 `$HOME` 目录（推荐显式写出）。
+- `shell editor terminal`：作为多个“分组”（group）一起安装。
 - `-S` 表示执行安装（stow）。
 - `-v` 打印详细信息，方便确认创建了哪些符号链接。
-- 可以加上 `-n`（如 `stow -Snv shell`）先预览会创建/删除哪些链接。
+- 可以加上 `-n`（如 `stow -Snv -t "$HOME" shell editor terminal`）先预览会创建/删除哪些链接。
 
 ## 卸载
 
-在 `~/configs` 目录下，执行：
+同样使用 `-t`，可以一次性卸载多个分组：
 
 ```bash
-stow -Dv shell
-stow -Dv editor
-stow -Dv terminal
+stow -Dv -t "$HOME" shell editor terminal
 ```
 
-- `-D` 表示卸载（delete），会删除 stow 创建的符号链接。
+- `-D` 表示卸载（delete），会删除 stow 创建的符号链接（不会删除仓库里的原始文件）。
 
 ## 链接冲突说明
 
