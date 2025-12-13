@@ -1,0 +1,39 @@
+[user]
+	email = kysshsy@gmail.com
+	name = kysshsy
+
+[ui "color"]
+	ui = always
+[color]
+	ui = true
+[core]
+	autocrlf = input
+	safecrlf = true
+[merge]
+	tool = vimdiff
+[diff]
+	tool = vimdiff
+[alias]
+	c = commit
+	s = status
+	st = status
+	lg = log --oneline
+	last = difftool HEAD^ HEAD
+	cl = log -p -- ':(exclude)Cargo.lock'
+	f = push --force-with-lease
+	# https://stackoverflow.com/a/11688523/472927
+	ss = "!f() { git stash show stash^{/$*} -p; }; f"
+	sa = "!f() { git stash apply stash^{/$*}; }; f"
+	sl = stash list
+[pull]
+	ff = only
+[push]
+	default = simple
+
+[difftool]
+	prompt = false
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[rerere]
+	enabled = true

@@ -1,0 +1,5 @@
+# Local-only wezterm overrides.
+.wezterm.local.lua
+
+# Backup files.
+*.bak
