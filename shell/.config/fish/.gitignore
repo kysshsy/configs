@@ -1,7 +1,0 @@
-# Do not share per-user secrets or generated fish state.
-secrets.fish
-fish_variables
-
-# Temporary/backup config files
-config.fish.tmp
-*.bak
