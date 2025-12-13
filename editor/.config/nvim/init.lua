@@ -2,17 +2,12 @@
 vim.keymap.set("n", "<Space>", "<Nop>", { silent = true })
 vim.g.mapleader = " "
 
--- set shell
-vim.opt.shell = '/bin/bash'
-
-
 -------------------------------------------------------------------------------
 --
 -- preferences
 --
 -------------------------------------------------------------------------------
 -- never ever folding
-
 vim.opt.foldenable = false
 vim.opt.foldmethod = 'manual'
 vim.opt.foldlevelstart = 99
@@ -79,33 +74,11 @@ vim.api.nvim_create_autocmd('Filetype', { pattern = 'rust', command = 'set color
 -- also, show tabs nicer
 vim.opt.listchars = 'tab:^ ,nbsp:¬,extends:»,precedes:«,trail:•'
 
--- enable lsp inlay_hint
-vim.lsp.inlay_hint.enable(true, { 0 })
-
-
--- set clipboard
-vim.g.clipboard = {
-  name = 'OSC 52',
-  copy = {
-    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-  },
-  paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-  },
-}
-
-
 -------------------------------------------------------------------------------
 --
 -- hotkeys
 --
 -------------------------------------------------------------------------------
--- quick-open
-vim.keymap.set('', '<C-p>', '<cmd>Files<cr>')
--- search buffers
-vim.keymap.set('n', '<leader>;', '<cmd>Buffers<cr>')
 -- quick-save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
 -- make missing : less annoying
@@ -154,6 +127,8 @@ vim.keymap.set('n', '*', '*zz', { silent = true })
 vim.keymap.set('n', '#', '#zz', { silent = true })
 vim.keymap.set('n', 'g*', 'g*zz', { silent = true })
 -- "very magic" (less escaping needed) regexes by default
+vim.keymap.set('n', '?', '?\\v')
+vim.keymap.set('n', '/', '/\\v')
 vim.keymap.set('c', '%s/', '%sm/')
 -- open new file adjacent to current file
 vim.keymap.set('n', '<leader>o', ':e <C-R>=expand("%:p:h") . "/" <cr>')
@@ -175,6 +150,14 @@ vim.keymap.set('n', '<leader>m', 'ct_')
 -- F1 is pretty close to Esc, so you probably meant Esc
 vim.keymap.set('', '<F1>', '<Esc>')
 vim.keymap.set('i', '<F1>', '<Esc>')
+
+-------------------------------------------------------------------------------
+--
+-- configuring diagnostics
+--
+-------------------------------------------------------------------------------
+-- Allow virtual text
+vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
 
 -------------------------------------------------------------------------------
 --
@@ -270,22 +253,17 @@ require("lazy").setup({
 		lazy = false, -- load at start
 		priority = 1000, -- load first
 		config = function()
-			vim.cmd([[colorscheme base16-gruvbox-dark-hard]])
+			vim.cmd([[colorscheme gruvbox-dark-hard]])
 			vim.o.background = 'dark'
-			-- XXX: hi Normal ctermbg=NONE
+			vim.cmd([[hi Normal ctermbg=NONE]])
+			-- Less visible window separator
+			vim.api.nvim_set_hl(0, "WinSeparator", { fg = 1250067 })
 			-- Make comments more prominent -- they are important.
 			local bools = vim.api.nvim_get_hl(0, { name = 'Boolean' })
 			vim.api.nvim_set_hl(0, 'Comment', bools)
 			-- Make it clearly visible which argument we're at.
 			local marked = vim.api.nvim_get_hl(0, { name = 'PMenu' })
 			vim.api.nvim_set_hl(0, 'LspSignatureActiveParameter', { fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg, ctermbg = marked.ctermbg, bold = true })
-			-- vim.api.nvim_set_hl(0, 'ColorColumn', { ctermbg='DarkGray', bg='DarkGray' })
-			-- vim.api.nvim_set_hl(0, 'LineNr', { ctermbg='DarkGray', bg='DarkGray' })
-			-- vim.api.nvim_set_hl(0, 'SignColumn', { ctermbg='DarkGray', bg='DarkGray' })
-
-			-- Make menu like lsp suggestion bg Gray
-			-- vim.api.nvim_set_hl(0, 'Pmenu', { ctermbg='DarkGray', bg='DarkGray' })
-
 			-- XXX
 			-- Would be nice to customize the highlighting of warnings and the like to make
 			-- them less glaring. But alas
@@ -336,23 +314,45 @@ require("lazy").setup({
 	},
 	-- quick navigation
 	{
-	  "folke/flash.nvim",
-	  event = "VeryLazy",
-	  ---@type Flash.Config
-	  -- stylua: ignore
-	  keys = {
-	    { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-	    { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-	    { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-	    { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-	    { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-	  },
+		'ggandor/leap.nvim',
+		config = function()
+			vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
+			vim.keymap.set('n',             'S', '<Plug>(leap-from-window)')
+		end
 	},
 	-- better %
 	{
 		'andymass/vim-matchup',
 		config = function()
 			vim.g.matchup_matchparen_offscreen = { method = "popup" }
+		end
+	},
+	-- option to center the editor
+	{
+		"shortcuts/no-neck-pain.nvim",
+		version = "*",
+		opts = {
+			mappings = {
+				enabled = true,
+				toggle = false,
+				toggleLeftSide = false,
+				toggleRightSide = false,
+				widthUp = false,
+				widthDown = false,
+				scratchPad = false,
+			}
+		},
+		config = function()
+			vim.keymap.set('', '<leader>t', function()
+				vim.cmd([[
+					:NoNeckPain
+					:set formatoptions-=tc linebreak tw=0 cc=0 wrap wm=20 noautoindent nocindent nosmartindent indentkeys=
+				]])
+				-- make 0, ^ and $ behave better in wrapped text
+				vim.keymap.set('n', '0', 'g0')
+				vim.keymap.set('n', '$', 'g$')
+				vim.keymap.set('n', '^', 'g^')
+			end)
 		end
 	},
 	-- auto-cd to root of git project
@@ -365,27 +365,92 @@ require("lazy").setup({
 	},
 	-- fzf support for ^p
 	{
-		"ibhagwan/fzf-lua",
-		  -- optional for icon support
-		  dependencies = { "nvim-tree/nvim-web-devicons" },
-		  config = function()
-		    -- calling `setup` is optional for customization
-		    require("fzf-lua").setup({ "fzf-vim" })
-		  end
+		'ibhagwan/fzf-lua',
+		config = function()
+			-- stop putting a giant window over my editor
+			require'fzf-lua'.setup{
+				winopts = {
+					split = "belowright 10new",
+					preview = {
+						hidden = true,
+					}
+				},
+				files = {
+					-- file icons are distracting
+					file_icons = false,
+					-- git icons are nice
+					git_icons = true,
+					-- but don't mess up my anchored search
+					_fzf_nth_devicons = true,
+				},
+				buffers = {
+					file_icons = false,
+					git_icons = true,
+					-- no nth_devicons as we'll do that
+					-- manually since we also use
+					-- with-nth
+				},
+				fzf_opts = {
+					-- no reverse view
+					["--layout"] = "default",
+				},
+			}
+			-- when using C-p for quick file open, pass the file list through
+			--
+			--   https://github.com/jonhoo/proximity-sort
+			--
+			-- to prefer files closer to the current file.
+			vim.keymap.set('', '<C-p>', function()
+				opts = {}
+				opts.cmd = 'fd --color=never --hidden --type f --type l --exclude .git'
+				local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
+				if base ~= '.' then
+					-- if there is no current file,
+					-- proximity-sort can't do its thing
+					opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
+				end
+				opts.fzf_opts = {
+				  ['--scheme']    = 'path',
+				  ['--tiebreak']  = 'index',
+				  ["--layout"]    = "default",
+				}
+				require'fzf-lua'.files(opts)
+			end)
+			-- use fzf to search buffers as well
+			vim.keymap.set('n', '<leader>;', function()
+				require'fzf-lua'.buffers({
+					-- just include the paths in the fzf bits, and nothing else
+					-- https://github.com/ibhagwan/fzf-lua/issues/2230#issuecomment-3164258823
+					fzf_opts = {
+					  ["--with-nth"]      = "{-3..-2}",
+					  ["--nth"]           = "-1",
+					  ["--delimiter"]     = "[:\u{2002}]",
+					  ["--header-lines"]  = "false",
+					},
+					header = false,
+				})
+			end)
+		end
 	},
+	-- LSP
 	{
 		'neovim/nvim-lspconfig',
 		config = function()
 			-- Setup language servers.
-			local lspconfig = require('lspconfig')
 
 			-- Rust
-			lspconfig.rust_analyzer.setup {
+			vim.lsp.config('rust_analyzer', {
 				-- Server-specific settings. See `:help lspconfig-setup`
 				settings = {
 					["rust-analyzer"] = {
 						cargo = {
-							allFeatures = true,
+							features = "all",
+						},
+						checkOnSave = {
+							enable = true,
+						},
+						check = {
+							command = "clippy",
 						},
 						imports = {
 							group = {
@@ -399,26 +464,22 @@ require("lazy").setup({
 						},
 					},
 				},
-			}
+			})
+			vim.lsp.enable('rust_analyzer')
 
 			-- Bash LSP
-			local configs = require 'lspconfig.configs'
-			if not configs.bash_lsp and vim.fn.executable('bash-language-server') == 1 then
-				configs.bash_lsp = {
-					default_config = {
-						cmd = { 'bash-language-server', 'start' },
-						filetypes = { 'sh' },
-						root_dir = require('lspconfig').util.find_git_ancestor,
-						init_options = {
-							settings = {
-								args = {}
-							}
-						}
-					}
-				}
+			if vim.fn.executable('bash-language-server') == 1 then
+				vim.lsp.enable('bashls')
 			end
-			if configs.bash_lsp then
-				lspconfig.bash_lsp.setup {}
+
+			-- texlab for LaTeX
+			if vim.fn.executable('texlab') == 1 then
+				vim.lsp.enable('texlab')
+			end
+
+			-- Ruff for Python
+			if vim.fn.executable('ruff') == 1 then
+				vim.lsp.enable('ruff')
 			end
 
 			-- Global mappings.
@@ -459,15 +520,25 @@ require("lazy").setup({
 
 					local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
-					-- When https://neovim.io/doc/user/lsp.html#lsp-inlay_hint stabilizes
-					-- *and* there's some way to make it only apply to the current line.
-					-- if client.server_capabilities.inlayHintProvider then
-					--     vim.lsp.inlay_hint(ev.buf, true)
-					-- end
+					-- TODO: find some way to make this only apply to the current line.
+					if client.server_capabilities.inlayHintProvider then
+					    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+					end
 
 					-- None of this semantics tokens business.
 					-- https://www.reddit.com/r/neovim/comments/143efmd/is_it_possible_to_disable_treesitter_completely/
 					client.server_capabilities.semanticTokensProvider = nil
+
+					-- format on save for Rust
+					if client.server_capabilities.documentFormattingProvider then
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							group = vim.api.nvim_create_augroup("RustFormat", { clear = true }),
+							buffer = bufnr,
+							callback = function()
+								vim.lsp.buf.format({ bufnr = bufnr })
+							end,
+						})
+					end
 				end,
 			})
 		end
@@ -491,22 +562,17 @@ require("lazy").setup({
 				snippet = {
 					-- REQUIRED by nvim-cmp. get rid of it once we can
 					expand = function(args)
-						vim.fn["vsnip#anonymous"](args.body)
+						vim.snippet.expand(args.body)
 					end,
 				},
-				preselect = cmp.PreselectMode.None,
 				mapping = cmp.mapping.preset.insert({
 					['<C-b>'] = cmp.mapping.scroll_docs(-4),
 					['<C-f>'] = cmp.mapping.scroll_docs(4),
 					['<C-Space>'] = cmp.mapping.complete(),
 					['<C-e>'] = cmp.mapping.abort(),
-
-					-- Set <Tab> to choose next suggestion
-					['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),	
-					
 					-- Accept currently selected item.
 					-- Set `select` to `false` to only confirm explicitly selected items.
-					['<CR>'] = cmp.mapping.confirm({ select = true }),
+					['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
 				}),
 				sources = cmp.config.sources({
 					{ name = 'nvim_lsp' },
@@ -562,15 +628,14 @@ require("lazy").setup({
 			"nvim-treesitter/nvim-treesitter",
 		},
 	},
-	-- rust
+	-- latex
 	{
-		'rust-lang/rust.vim',
-		ft = { "rust" },
-		config = function()
-			vim.g.rustfmt_autosave = 1
-			vim.g.rustfmt_emit_files = 1
-			vim.g.rustfmt_fail_silently = 0
-			vim.g.rust_clip_command = 'wl-copy'
+		"lervag/vimtex",
+		ft = { "tex" },
+		lazy = false,     -- we don't want to lazy load VimTeX
+		init = function()
+			vim.g.vimtex_view_method = "zathura"
+			vim.g.vimtex_mappings_enabled = false
 		end
 	},
 	-- fish
@@ -596,7 +661,6 @@ require("lazy").setup({
 	},
 })
 
-
 --[[
 
 leftover things from init.vim that i may still end up wanting
@@ -618,15 +682,18 @@ set formatoptions+=r " continue comments when pressing ENTER in I mode
 set formatoptions+=q " enable formatting of comments with gq
 set formatoptions+=n " detect lists for formatting
 set formatoptions+=b " auto-wrap in insert mode, and do not wrap old long lines
+
+" <leader>s for Rg search
+noremap <leader>s :Rg
+let g:fzf_layout = { 'down': '~20%' }
+command! -bang -nargs=* Rg
+\ call fzf#vim#grep(
+\   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+\   <bang>0 ? fzf#vim#with_preview('up:60%')
+\           : fzf#vim#with_preview('right:50%:hidden', '?'),
+\   <bang>0)
+
+" <leader>q shows stats
+nnoremap <leader>q g<c-g>
+
 --]]
-
-
--- Lua configuration for Neovim
-vim.api.nvim_set_keymap('n', '<leader>s', ':Rg<CR>', { noremap = true, silent = true })
-
--- Define the fzf layout
-vim.g.fzf_layout = { down = '~20%' }
-
--- Map <leader>q to show stats
-vim.api.nvim_set_keymap('n', '<leader>q', 'g<C-g>', { noremap = true, silent = true })
-
