@@ -628,16 +628,6 @@ require("lazy").setup({
 			"nvim-treesitter/nvim-treesitter",
 		},
 	},
-	-- latex
-	{
-		"lervag/vimtex",
-		ft = { "tex" },
-		lazy = false,     -- we don't want to lazy load VimTeX
-		init = function()
-			vim.g.vimtex_view_method = "zathura"
-			vim.g.vimtex_mappings_enabled = false
-		end
-	},
 	-- fish
 	'khaveesh/vim-fish-syntax',
 	-- markdown
