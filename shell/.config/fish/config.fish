@@ -90,12 +90,14 @@ if test -d ~/.local/bin
 end
 
 ## Starship prompt
-if status --is-interactive
-   source ("/usr/bin/starship" init fish --print-full-init | psub)
+if status --is-interactive; and type -q starship
+    starship init fish --print-full-init | source
 end
 
-## Advanced command-not-found hook
-source /usr/share/doc/find-the-command/ftc.fish
+## Advanced command-not-found hook (optional)
+if test -f /usr/share/doc/find-the-command/ftc.fish
+    source /usr/share/doc/find-the-command/ftc.fish
+end
 
 
 ## History helpers and key bindings
@@ -183,9 +185,16 @@ alias big 'expac -H M "%m\t%n" | sort -h | nl'     # Sort installed packages acc
 alias dir 'dir --color=auto'
 alias fixpacman 'sudo rm /var/lib/pacman/db.lck'
 alias gitpkg 'pacman -Q | grep -i "\-git" | wc -l' # List amount of -git packages
-alias grep 'ugrep --color=auto'
-alias egrep 'ugrep -E --color=auto'
-alias fgrep 'ugrep -F --color=auto'
+## grep family: prefer ugrep if available, otherwise fall back to grep
+if type -q ugrep
+    alias grep 'ugrep --color=auto'
+    alias egrep 'ugrep -E --color=auto'
+    alias fgrep 'ugrep -F --color=auto'
+else
+    alias grep 'grep --color=auto'
+    alias egrep 'grep -E --color=auto'
+    alias fgrep 'grep -F --color=auto'
+end
 alias grubup 'sudo update-grub'
 alias hw 'hwinfo --short'                          # Hardware Info
 alias ip 'ip -color'
@@ -250,14 +259,29 @@ end
 # <<< conda initialize <<<
 
 
-## SSH key handling
-# keychain
-eval (keychain --quiet --eval)
-source ~/.keychain/$hostname-fish
+## SSH key handling (optional: keychain)
+if status --is-interactive
+    if type -q keychain
+        # Set up environment from keychain (SSH agent, keys, etc.)
+        eval (keychain --quiet --eval)
+
+        # Source any host-specific fish snippets keychain created.
+        # Files are typically named like ~/.keychain/<hostname>-fish
+        for kc_file in $HOME/.keychain/*-fish
+            if test -f $kc_file
+                source $kc_file
+            end
+        end
+    else
+        echo "warning: keychain not found; SSH keys will not be auto-loaded (install 'keychain' or remove this block)" >&2
+    end
+end
 
 
 ## Fuzzy finder key bindings
-fzf --fish | source
+if type -q fzf
+    fzf --fish | source
+end
 
 
 ## Haskell toolchain (ghcup / cabal)
