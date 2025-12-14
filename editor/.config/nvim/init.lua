@@ -400,15 +400,17 @@ require("lazy").setup({
 			--   https://github.com/jonhoo/proximity-sort
 			--
 			-- to prefer files closer to the current file.
+			-- NOTE: proximity-sort is currently disabled; we just use plain fzf
+			-- ranking instead to avoid the extra external dependency.
 			vim.keymap.set('', '<C-p>', function()
 				opts = {}
 				opts.cmd = 'fd --color=never --hidden --type f --type l --exclude .git'
-				local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
-				if base ~= '.' then
-					-- if there is no current file,
-					-- proximity-sort can't do its thing
-					opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
-				end
+				-- local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
+				-- if base ~= '.' then
+				-- 	-- if there is no current file,
+				-- 	-- proximity-sort can't do its thing
+				-- 	opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
+				-- end
 				opts.fzf_opts = {
 				  ['--scheme']    = 'path',
 				  ['--tiebreak']  = 'index',
