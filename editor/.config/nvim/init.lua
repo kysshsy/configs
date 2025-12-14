@@ -363,17 +363,35 @@ require("lazy").setup({
 			require('nvim-rooter').setup()
 		end
 	},
-	-- fzf support for ^p
+	-- fzf support for ^p (with proximity-sort)
 	{
 		'ibhagwan/fzf-lua',
 		config = function()
+			-- Prevent fzf-lua from injecting raw ANSI escape sequences into
+			-- file names, headers, or messages. This keeps lines like
+			-- `^[48;2;...m Files ^[0m` from appearing in Neovim.
+			local ok_utils, fzf_utils = pcall(require, 'fzf-lua.utils')
+			if ok_utils and fzf_utils then
+				fzf_utils.ansi_from_hl = function(_, s)
+					return s
+				end
+				fzf_utils.ansi_from_rgb = function(_, s)
+					return s
+				end
+				fzf_utils.ansi_codes = setmetatable({}, {
+					__index = function()
+						return function(s) return s end
+					end,
+				})
+			end
+
 			-- stop putting a giant window over my editor
-			require'fzf-lua'.setup{
+			require('fzf-lua').setup({
 				winopts = {
 					split = "belowright 10new",
 					preview = {
 						hidden = true,
-					}
+					},
 				},
 				files = {
 					-- file icons are distracting
@@ -394,33 +412,33 @@ require("lazy").setup({
 					-- no reverse view
 					["--layout"] = "default",
 				},
-			}
+			})
+
 			-- when using C-p for quick file open, pass the file list through
 			--
 			--   https://github.com/jonhoo/proximity-sort
 			--
 			-- to prefer files closer to the current file.
-			-- NOTE: proximity-sort is currently disabled; we just use plain fzf
-			-- ranking instead to avoid the extra external dependency.
 			vim.keymap.set('', '<C-p>', function()
-				opts = {}
+				local opts = {}
 				opts.cmd = 'fd --color=never --hidden --type f --type l --exclude .git'
-				-- local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
-				-- if base ~= '.' then
-				-- 	-- if there is no current file,
-				-- 	-- proximity-sort can't do its thing
-				-- 	opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
-				-- end
+				local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
+				if base ~= '.' then
+					-- if there is no current file,
+					-- proximity-sort can't do its thing
+					opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
+				end
 				opts.fzf_opts = {
 				  ['--scheme']    = 'path',
 				  ['--tiebreak']  = 'index',
 				  ["--layout"]    = "default",
 				}
-				require'fzf-lua'.files(opts)
+				require('fzf-lua').files(opts)
 			end)
+
 			-- use fzf to search buffers as well
 			vim.keymap.set('n', '<leader>;', function()
-				require'fzf-lua'.buffers({
+				require('fzf-lua').buffers({
 					-- just include the paths in the fzf bits, and nothing else
 					-- https://github.com/ibhagwan/fzf-lua/issues/2230#issuecomment-3164258823
 					fzf_opts = {
