@@ -539,10 +539,11 @@ require("lazy").setup({
 					end, opts)
 
 					local client = vim.lsp.get_client_by_id(ev.data.client_id)
+					local bufnr = ev.buf
 
-					-- TODO: find some way to make this only apply to the current line.
+					-- Enable inlay hints when the server supports them (e.g. rust-analyzer).
 					if client.server_capabilities.inlayHintProvider then
-					    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+						vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 					end
 
 					-- None of this semantics tokens business.
@@ -594,10 +595,11 @@ require("lazy").setup({
 					-- Set `select` to `false` to only confirm explicitly selected items.
 					['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
 				}),
+				-- Always include path completions alongside LSP so we see
+				-- real filesystem entries (not just .rs from rust-analyzer).
 				sources = cmp.config.sources({
-					{ name = 'nvim_lsp' },
-				}, {
 					{ name = 'path' },
+					{ name = 'nvim_lsp' },
 				}),
 				experimental = {
 					ghost_text = true,
