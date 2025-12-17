@@ -275,8 +275,10 @@ export http_proxy=http://127.0.0.1:7890
 export https_proxy=$http_proxy
 
 
-## Auto-start a fresh tmux session on interactive login (do not reuse old ones).
-if status --is-interactive; and status --is-login; and not set -q TMUX; and command -q tmux
+## Auto-start a fresh tmux session on interactive login (Linux only).
+if status --is-interactive; and status --is-login; and not set -q TMUX; \
+   and command -q tmux; and test (uname) = "Linux"
     # Ensure tmux uses fish as its default shell, then create a new session.
     exec tmux set-option -g default-shell (which fish) ';' new-session
 end
+

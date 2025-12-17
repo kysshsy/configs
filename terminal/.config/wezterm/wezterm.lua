@@ -5,7 +5,7 @@ local config = {}
 config.color_scheme = 'Dracula+'
 
 -- set font
-config.font = wezterm.font('DejaVuSansMono',{})
+config.font = wezterm.font('DejaVu Sans Mono',{})
 
 config.keys = {
 {
