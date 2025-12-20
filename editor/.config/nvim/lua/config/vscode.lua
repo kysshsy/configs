@@ -14,6 +14,12 @@
 local M = {}
 
 function M.setup()
+	-- vim-matchup updates match-paren highlighting very frequently. In the
+	-- vscode-neovim environment, those highlight updates can race with the
+	-- insert→normal transition and manifest as “extra characters inserted on Esc”.
+	-- Deferring the highlight update avoids that timing window and also reduces
+	-- cursor-move overhead. https://github.com/vscode-neovim/vscode-neovim/issues/540
+	vim.g.matchup_matchparen_deferred = 1
 	-- Keep VS Code path minimal but still allow a few motion plugins that work
 	-- without touching Neovim's UI (statusline/floating windows/etc.).
 
@@ -79,9 +85,15 @@ function M.setup()
 		-- 诊断导航（与 keybindings.json 保持一致，多一份映射以便不依赖外部和弦）
 		map('n', '[d', 'editor.action.marker.prev')
 		map('n', ']d', 'editor.action.marker.next')
+
+		-- Diff hunk navigation (matches Vim's built-in `[c` / `]c` in diff mode).
+		-- Using Neovim mappings avoids VS Code chord keybindings that can interfere
+		-- with typing `[` in insert mode.
+		map({ 'n', 'v' }, '[c', 'workbench.action.compareEditor.previousChange')
+		map({ 'n', 'v' }, ']c', 'workbench.action.compareEditor.nextChange')
 		map('n', '<leader>e', 'editor.action.showHover')
 		map('n', '<leader>q', 'workbench.actions.view.problems')
+		end
 	end
-end
 
 return M
