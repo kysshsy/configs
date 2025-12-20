@@ -1,0 +1,31 @@
+{
+    // SSH configuration for remote development, remote platform is important
+    "remote.SSH.remotePlatform": {
+        "dev": "linux"
+    },
+    "remote.SSH.useLocalServer": false,
+    "workbench.colorTheme": "GitHub Dark Colorblind (Beta)",
+    "editor.fontSize": 15,
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+    "editor.semanticTokenColorCustomizations": {
+        "enabled": true,
+        "rules": {
+            "*.mutable": {
+                "underline": false,
+            }
+        }
+    },
+    "editor.lineNumbers": "relative",
+
+    "editor.rulers": [
+        {
+            "column": 80,
+            "color": "#ff880060"
+        }
+    ],
+
+    "diffEditor.renderSideBySide": true,
+    "editor.fontFamily": "DejaVu Sans Mono, Monaco, 'Courier New', monospace",
+}
