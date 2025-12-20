@@ -7,6 +7,8 @@ vim.g.mapleader = " "
 -- preferences
 --
 -------------------------------------------------------------------------------
+-- enable true color support
+vim.opt.termguicolors = true
 -- never ever folding
 vim.opt.foldenable = false
 vim.opt.foldmethod = 'manual'
