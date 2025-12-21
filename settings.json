@@ -1,31 +1,62 @@
 {
-    // SSH configuration for remote development, remote platform is important
-    "remote.SSH.remotePlatform": {
-        "dev": "linux"
-    },
+    // =============================================================================
+    // Remote Development (SSH)
+    // =============================================================================
+    // Remote platform hints help the Remote - SSH extension pick correct defaults.
+    "remote.SSH.remotePlatform": { "dev": "linux" },
     "remote.SSH.useLocalServer": false,
+
+    // =============================================================================
+    // Appearance
+    // =============================================================================
     "workbench.colorTheme": "GitHub Dark Colorblind (Beta)",
+    "editor.fontFamily": "DejaVu Sans Mono, Monaco, 'Courier New', monospace",
     "editor.fontSize": 15,
-    "extensions.experimental.affinity": {
-        "asvetliakov.vscode-neovim": 1
-    },
+
+    // =============================================================================
+    // Editor View
+    // =============================================================================
+    "editor.lineNumbers": "relative",
+
+    // Visual guide(s) for line width.
+    "editor.rulers": [{ "column": 80, "color": "#ff880060" }],
+
+    // Show tabs/spaces at boundaries (helps catch trailing whitespace and odd indents
+    // without being as noisy as `"all"`).
+    "editor.renderWhitespace": "boundary",
+
+    // =============================================================================
+    // Diff Editor
+    // =============================================================================
+    "diffEditor.renderSideBySide": true,
+
+    // =============================================================================
+    // Git
+    // =============================================================================
+    "git.autofetch": true,
+    "git.blame.editorDecoration.enabled": true,
+
+    // =============================================================================
+    // Token Styling
+    // =============================================================================
     "editor.semanticTokenColorCustomizations": {
         "enabled": true,
         "rules": {
             "*.mutable": {
-                "underline": false,
+                "underline": false
             }
         }
     },
-    "editor.lineNumbers": "relative",
 
-    "editor.rulers": [
-        {
-            "column": 80,
-            "color": "#ff880060"
-        }
-    ],
+    // =============================================================================
+    // Extension Behavior
+    // =============================================================================
+    // Pin vscode-neovim to a separate extension host (helps responsiveness).
+    "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
 
-    "diffEditor.renderSideBySide": true,
-    "editor.fontFamily": "DejaVu Sans Mono, Monaco, 'Courier New', monospace",
+    // vscode-neovim note:
+    // If you ever see keys “replayed” when leaving insert mode, consider explicitly
+    // setting these in your VS Code settings:
+    // "vscode-neovim.compositeKeys": {},
+    // "vscode-neovim.compositeTimeout": 100,
 }
