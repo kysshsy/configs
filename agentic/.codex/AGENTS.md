@@ -1,6 +1,9 @@
 ## General best practices
 
 - Run shell scripts through shellcheck.
+- Prefer small, self-contained changes that keep the project in a working state.
+- Optimize edits for readability and review: avoid mixing unrelated changes in one edit and favor clear, explicit code over cleverness.
+- When a change touches multiple concerns (logic, tests, docs), keep each concern grouped and ensure the overall edit is logically complete.
 
 ### SESSION.md
 

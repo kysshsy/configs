@@ -270,7 +270,6 @@ set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; se
 
 
 ## Proxy
-# proxy
 export http_proxy=http://127.0.0.1:7890
 export https_proxy=$http_proxy
 
