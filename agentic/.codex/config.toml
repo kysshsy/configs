@@ -1,0 +1,106 @@
+# 默认：走 codeilab + gpt-5.1-codex-max，偏快（low 推理）
+model_provider = "rightcode"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "medium"
+disable_response_storage = true
+
+[model_providers.codeilab]
+name = "codeilab"
+base_url = "https://www.codeilab.com/api/codex"
+wire_api = "responses"
+requires_openai_auth = true
+
+[model_providers.rightcode]
+name = "rightcode"
+base_url = "https://rightapi.ai/codex/v1"
+wire_api = "responses"
+requires_openai_auth = true
+
+[model_providers.yunwu]
+name = "rightcode"
+base_url = "https://yunwu.ai/v1"
+wire_api = "responses"
+requires_openai_auth = true
+
+
+approval_policy = "never"
+sandbox_mode    = "workspace-write"
+
+web_search = "live"
+
+[notice]
+"hide_gpt-5.1-codex-max_migration_prompt" = true
+hide_rate_limit_model_nudge = true
+
+[notice.model_migrations]
+"gpt-5.2" = "gpt-5.2-codex"
+"gpt-5.3-codex" = "gpt-5.4"
+
+[mcp_servers.fetch]
+command = "uvx"
+args = ["mcp-server-fetch"]
+
+[mcp_servers.fetch.tools.fetch]
+approval_mode = "approve"
+
+[profiles.fast]
+model = "gpt-5-nano"
+model_reasoning_effort = "low"
+
+[projects."/home/kyss/configs"]
+trust_level = "untrusted"
+
+[projects."/home/kyss/labs/brrr"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/1brc"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/playground/datafusion_partitions"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/datafusion"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/tealdb"]
+trust_level = "trusted"
+
+[projects."/home/kyss"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/lancedb"]
+trust_level = "trusted"
+
+[projects."/home/kyss/.codex"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/auron"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/spark_test"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/spark/spark-3.5.8-bin-hadoop3"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/IceArrow"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/icearrow"]
+trust_level = "trusted"
+
+[projects."/home/kyss/.vscode-server"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/lance"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/postgres"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
