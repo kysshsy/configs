@@ -1,3 +1,8 @@
 fishd.*
 fish_history
 fish_variables
+derby.log
+gmon.out
+metastore_db/
+conf.d/fish_frozen_key_bindings.fish
+conf.d/fish_frozen_theme.fish
