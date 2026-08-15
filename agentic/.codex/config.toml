@@ -9,10 +9,19 @@ model = "gpt-5.6-luna"
 model_reasoning_effort = "medium"
 disable_response_storage = true
 
-# Automatically execute work inside the active workspace, while retaining the
-# filesystem boundary imposed by the workspace-write sandbox.
-approval_policy = "never"
-sandbox_mode = "workspace-write"
+# Run commands automatically within the permission profile below. Codex must
+# request approval before it can perform an operation outside that boundary.
+approval_policy = "on-request"
+
+# Use permission profiles instead of the legacy `sandbox_mode` settings. The
+# default leaves every workspace read-only; the Fish launcher selects the
+# writable profile only after it identifies a Git work tree. Permission tables
+# are declared at the end of this file; TOML requires this selector to appear
+# before every table.
+default_permissions = "readonly-network"
+
+[shell_environment_policy]
+inherit = "all"
 
 # Allow the built-in web search tool for sessions that need current information.
 web_search = "live"
@@ -51,3 +60,42 @@ approval_mode = "approve"
 [profiles.fast]
 model = "gpt-5-nano"
 model_reasoning_effort = "low"
+
+[projects."/home/kyss/configs"]
+trust_level = "trusted"
+
+[projects."/home/kyss/.config"]
+trust_level = "trusted"
+
+[projects."/home/kyss"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.6-sol" = 4
+
+# ==============================================================================
+# Permission profiles
+# ==============================================================================
+# The default profile supports inspection and networking from any directory,
+# but never writes. Fish switches to `project-network` only within a Git work
+# tree, making the current workspace and its `.git` metadata writable.
+[permissions.readonly-network]
+description = "Read-only filesystem access with unrestricted network."
+
+[permissions.readonly-network.filesystem]
+":root" = "read"
+
+[permissions.readonly-network.network]
+enabled = true
+
+[permissions.project-network]
+description = "Writable project with read-only host access and unrestricted network."
+
+[permissions.project-network.filesystem]
+":root" = "read"
+
+[permissions.project-network.filesystem.":workspace_roots"]
+"." = "write"
+
+[permissions.project-network.network]
+enabled = true
