@@ -1,9 +1,25 @@
-# 默认：走 codeilab + gpt-5.1-codex-max，偏快（low 推理）
+# ==============================================================================
+# Default session behavior
+# ==============================================================================
+#
+# These root-level settings must precede every TOML table. Otherwise TOML assigns
+# them to the preceding table and Codex silently keeps its global defaults.
 model_provider = "rightcode"
 model = "gpt-5.6-luna"
 model_reasoning_effort = "medium"
 disable_response_storage = true
 
+# Automatically execute work inside the active workspace, while retaining the
+# filesystem boundary imposed by the workspace-write sandbox.
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+
+# Allow the built-in web search tool for sessions that need current information.
+web_search = "live"
+
+# ==============================================================================
+# Model providers
+# ==============================================================================
 [model_providers.codeilab]
 name = "codeilab"
 base_url = "https://www.codeilab.com/api/codex"
@@ -22,12 +38,9 @@ base_url = "https://yunwu.ai/v1"
 wire_api = "responses"
 requires_openai_auth = true
 
-
-approval_policy = "never"
-sandbox_mode    = "workspace-write"
-
-web_search = "live"
-
+# ==============================================================================
+# UI notices and model availability
+# ==============================================================================
 [notice]
 "hide_gpt-5.1-codex-max_migration_prompt" = true
 hide_rate_limit_model_nudge = true
@@ -36,6 +49,14 @@ hide_rate_limit_model_nudge = true
 "gpt-5.2" = "gpt-5.2-codex"
 "gpt-5.3-codex" = "gpt-5.4"
 
+# Records local onboarding prompts that have already been acknowledged.
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+
+# ==============================================================================
+# External tools and profiles
+# ==============================================================================
 [mcp_servers.fetch]
 command = "uvx"
 args = ["mcp-server-fetch"]
@@ -47,6 +68,9 @@ approval_mode = "approve"
 model = "gpt-5-nano"
 model_reasoning_effort = "low"
 
+# ==============================================================================
+# Trusted workspaces
+# ==============================================================================
 [projects."/home/kyss/configs"]
 trust_level = "untrusted"
 
@@ -100,7 +124,3 @@ trust_level = "trusted"
 
 [projects."/home/kyss/labs/postgres"]
 trust_level = "trusted"
-
-[tui.model_availability_nux]
-"gpt-5.5" = 4
-"gpt-5.6-sol" = 4
