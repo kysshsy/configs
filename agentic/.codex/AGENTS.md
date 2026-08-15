@@ -5,6 +5,9 @@
 - Optimize edits for readability and review: avoid mixing unrelated changes in one edit and favor clear, explicit code over cleverness.
 - When a change touches multiple concerns (logic, tests, docs), keep each concern grouped and ensure the overall edit is logically complete.
 
+### the First Principle Thinking
+use the First Principle Thinking more, answer the process not too detail when user not specify
+
 ### SESSION.md
 
 While working, if you come across any bugs, missing features, or other
