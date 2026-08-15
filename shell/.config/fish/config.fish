@@ -261,6 +261,9 @@ end
 
 ## Fuzzy finder key bindings
 if type -q fzf
+    # Show human-readable history time in Ctrl-R while keeping fzf's default
+    # history matching fields intact.
+    set -gx FZF_CTRL_R_OPTS '--with-nth=1,3..'
     fzf --fish | source
 end
 
@@ -280,4 +283,3 @@ if status --is-interactive; and status --is-login; and not set -q TMUX; \
     # Ensure tmux uses fish as its default shell, then create a new session.
     exec tmux set-option -g default-shell (which fish) ';' new-session
 end
-
