@@ -141,7 +141,7 @@ end
 # until a profile is explicitly selected.
 function codex --wraps codex --description "Run Codex with Git-aware permissions"
     if command git rev-parse --is-inside-work-tree >/dev/null 2>&1
-        command codex -c 'default_permissions="project-network"' $argv
+        command codex -c 'default_permissions="project-permission"' $argv
     else
         command codex $argv
     end

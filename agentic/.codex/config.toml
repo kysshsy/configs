@@ -18,7 +18,7 @@ approval_policy = "on-request"
 # writable profile only after it identifies a Git work tree. Permission tables
 # are declared at the end of this file; TOML requires this selector to appear
 # before every table.
-default_permissions = "readonly-network"
+default_permissions = "normal-permission"
 
 [shell_environment_policy]
 inherit = "all"
@@ -57,6 +57,7 @@ args = ["mcp-server-fetch"]
 [mcp_servers.fetch.tools.fetch]
 approval_mode = "approve"
 
+# This is a model profile, selected with `-p fast`; it does not define access.
 [profiles.fast]
 model = "gpt-5-nano"
 model_reasoning_effort = "low"
@@ -77,25 +78,28 @@ trust_level = "trusted"
 # Permission profiles
 # ==============================================================================
 # The default profile supports inspection and networking from any directory,
-# but never writes. Fish switches to `project-network` only within a Git work
-# tree, making the current workspace and its `.git` metadata writable.
-[permissions.readonly-network]
-description = "Read-only filesystem access with unrestricted network."
+# with `/tmp` available for transient tool state. Fish switches to
+# `project-permission` only within a Git work tree, making the current
+# workspace and its `.git` metadata writable.
+[permissions.normal-permission]
+description = "Read-only host access with writable temporary storage and unrestricted network."
 
-[permissions.readonly-network.filesystem]
+[permissions.normal-permission.filesystem]
 ":root" = "read"
+"/tmp" = "write"
 
-[permissions.readonly-network.network]
+[permissions.normal-permission.network]
 enabled = true
 
-[permissions.project-network]
+[permissions.project-permission]
 description = "Writable project with read-only host access and unrestricted network."
 
-[permissions.project-network.filesystem]
+[permissions.project-permission.filesystem]
 ":root" = "read"
+"/tmp" = "write"
 
-[permissions.project-network.filesystem.":workspace_roots"]
+[permissions.project-permission.filesystem.":workspace_roots"]
 "." = "write"
 
-[permissions.project-network.network]
+[permissions.project-permission.network]
 enabled = true
