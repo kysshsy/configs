@@ -126,6 +126,8 @@
   # Rime reads user schemas from XDG data. Xiaohe double pinyin emits
   # simplified Chinese by default.
   xdg.dataFile = {
+    "icons/hicolor/scalable/apps/fcitx-rime.svg".source =
+      "${pkgs.fcitx5-rime}/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.fcitx-rime.svg";
     "fcitx5/rime/default.custom.yaml".text = ''
       patch:
         __include: rime_ice_suggestion:/
