@@ -3,6 +3,8 @@
 { lib, modulesPath, ... }:
 
 {
+  services.qemuGuest.enable = true;
+
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
   ];

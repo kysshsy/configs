@@ -4,13 +4,12 @@
   programs.niri.enable = true;
   security.polkit.enable = true;
 
-  # Greetd keeps the guest lightweight while providing a local graphical login
-  # through the PVE console. It is also suitable once the Intel iGPU is passed
-  # through for direct HDMI output.
+  # Greetd keeps the desktop lightweight while providing a local graphical
+  # login on either a physical display or a virtual console.
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd niri-session";
       user = "greeter";
     };
   };

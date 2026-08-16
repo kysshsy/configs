@@ -46,9 +46,9 @@ stow -Dv -t "$HOME" shell editor terminal
 
 ## NixOS
 
-`nix/` contains the declarative NixOS configuration for the PVE guest named
-`nixos-niri`. It intentionally leaves the existing Stow groups unchanged;
-Home Manager imports only portable Git, editor, and terminal preferences.
+The root `flake.nix` defines declarative NixOS targets. It intentionally leaves
+the existing Stow groups unchanged; Home Manager imports only portable Git,
+editor, and terminal preferences.
 
 The repository remains the single source of configuration files:
 
@@ -60,8 +60,21 @@ The repository remains the single source of configuration files:
   Codex.
   Other groups can continue to use Stow once their paths do not overlap.
 
-For example, after changing `editor/.config/nvim/` in this repository, apply
-that change on NixOS with `sudo nixos-rebuild switch --flake ~/configs/nix#nixos-niri`.
+Hardware-dependent files live in `nix/hardware/`; do not use a configuration
+from one machine on another machine. The available targets are:
+
+| Target | Hardware profile | Use case |
+| --- | --- | --- |
+| `dev-bare-metal` | `nix/hardware/dev-bare-metal.nix` | Current Intel mini-PC, installed directly on Btrfs |
+| `pve-niri-vm` | `nix/hardware/pve-niri-vm.nix` | Former PVE virtual machine using virtio disks |
+
+For example, after changing `editor/.config/nvim/`, rebuild the current
+bare-metal machine with:
+
+```bash
+sudo nixos-rebuild switch --flake ~/configs#dev-bare-metal
+```
+
 This makes configuration changes reviewable in Git and prevents files from
 silently drifting away from the repository.
 
@@ -70,9 +83,9 @@ no GitHub private key is needed:
 
 ```bash
 nix-shell -p git --run 'git clone https://github.com/kysshsy/configs.git ~/configs'
-cd ~/configs/nix
+cd ~/configs
 nix --extra-experimental-features 'nix-command flakes' flake lock
-sudo nixos-rebuild switch --flake .#nixos-niri --option experimental-features 'nix-command flakes'
+sudo nixos-rebuild switch --flake .#dev-bare-metal --option experimental-features 'nix-command flakes'
 ```
 
 The rebuild turns off SSH password and keyboard-interactive authentication.
@@ -80,7 +93,7 @@ Keep the current SSH connection open and verify a second connection with your
 Mac key before closing it:
 
 ```bash
-ssh -o PasswordAuthentication=no kyss@192.168.0.107
+ssh -o PasswordAuthentication=no kyss@192.168.0.106
 ```
 
 After reconnecting, install the npm Codex CLI as `kyss` (not with `sudo`):
@@ -93,7 +106,7 @@ codex
 Node.js and npm are supplied by Nix. The Flake directs npm's mutable global
 packages to `~/.npm-packages`, while the executable is added to the shell PATH.
 
-The Niri desktop starts from the PVE console after the rebuild. Log in as
-`kyss`, then use `Super+T` for WezTerm, `Super+D` for the launcher, and
+The Niri desktop starts on the bare-metal HDMI output after the rebuild. Log
+in as `kyss`, then use `Super+T` for WezTerm, `Super+D` for the launcher, and
 `Super+Shift+/` for the complete shortcut overlay. SSH remains available as
 the recovery and administration path.
