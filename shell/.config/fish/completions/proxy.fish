@@ -1,5 +1,4 @@
 complete -c proxy -f
-complete -c proxy -n '__fish_use_subcommand' -a init -d 'Create private Mihomo configuration'
 complete -c proxy -n '__fish_use_subcommand' -a 'start restart stop' -d 'Manage Mihomo service'
 complete -c proxy -n '__fish_use_subcommand' -a setup -d 'Save controller settings'
 complete -c proxy -n '__fish_use_subcommand' -a status -d 'Show core status'

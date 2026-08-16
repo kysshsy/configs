@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   home.username = "kyss";
@@ -52,34 +52,11 @@
   };
 
   # Mihomo runs independently from the optional Clash Verge graphical client.
-  # Seed a writable local config once; later activation never replaces it.
-  home.activation.initializeMihomoConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mihomo_dir="$HOME/.config/mihomo"
-    mihomo_config="$mihomo_dir/config.yaml"
-    if [ ! -e "$mihomo_config" ]; then
-      install -d -m 700 "$mihomo_dir"
-      cat > "$mihomo_config" <<'EOF'
-mixed-port: 7890
-allow-lan: false
-mode: rule
-log-level: info
-external-controller: 127.0.0.1:9097
-proxies: []
-proxy-groups:
-  - name: GLOBAL
-    type: select
-    proxies:
-      - DIRECT
-rules:
-  - MATCH,GLOBAL
-EOF
-      chmod 600 "$mihomo_config"
-    fi
-  '';
-
+  # The private configuration must contain a real subscription before startup.
   systemd.user.services.mihomo = {
     Unit = {
       Description = "Mihomo proxy core";
+      ConditionPathExists = "%h/.config/mihomo/config.yaml";
     };
     Service = {
       ExecStart = "${pkgs.mihomo}/bin/mihomo -d %h/.config/mihomo";

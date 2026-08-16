@@ -30,34 +30,6 @@ function proxy --description "Control a running Mihomo controller"
     end
 
     switch $command
-        case init
-            set -l mihomo_dir "$config_home/mihomo"
-            set -l mihomo_config "$mihomo_dir/config.yaml"
-            if test -e "$mihomo_config"
-                echo "Mihomo configuration already exists: $mihomo_config" >&2
-                return 1
-            end
-            command mkdir -p "$mihomo_dir"
-            command chmod 700 "$mihomo_dir"
-            begin
-                echo 'mixed-port: 7890'
-                echo 'allow-lan: false'
-                echo 'mode: rule'
-                echo 'log-level: info'
-                echo 'external-controller: 127.0.0.1:9097'
-                echo 'proxies: []'
-                echo 'proxy-groups:'
-                echo '  - name: GLOBAL'
-                echo '    type: select'
-                echo '    proxies:'
-                echo '      - DIRECT'
-                echo 'rules:'
-                echo '  - MATCH,GLOBAL'
-            end > "$mihomo_config"
-            command chmod 600 "$mihomo_config"
-            echo "Created $mihomo_config"
-            echo "Add a Mihomo-compatible subscription, then run: proxy start"
-
         case start restart stop
             if not command -q systemctl
                 echo "systemctl is required to manage the Mihomo background service." >&2
@@ -179,7 +151,6 @@ function proxy --description "Control a running Mihomo controller"
 
         case help -h --help
             echo "Usage: proxy <command>"
-            echo "  init                          Create private Mihomo configuration"
             echo "  start|restart|stop             Manage the background Mihomo service"
             echo "  setup                         Save private controller settings"
             echo "  status                        Show core version and mode"
