@@ -129,6 +129,6 @@ Node.js and npm are supplied by Nix. The Flake directs npm's mutable global
 packages to `~/.npm-packages`, while the executable is added to the shell PATH.
 
 The Niri desktop starts on the bare-metal HDMI output after the rebuild. Log
-in as `kyss`, then use `Super+T` for WezTerm, `Super+D` for the launcher, and
+in as `kyss`, then use `Alt+1` for WezTerm, `Super+D` for the launcher, and
 `Super+Shift+/` for the complete shortcut overlay. SSH remains available as
 the recovery and administration path.

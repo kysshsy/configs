@@ -10,20 +10,20 @@ config.font = wezterm.font('DejaVu Sans Mono',{})
 config.keys = {
 {
     key = 't',
-    mods = 'ALT',
+    mods = 'CTRL',
     action = act.SpawnTab 'CurrentPaneDomain',
 },
 {
     key = 'w',
-    mods = 'ALT',
-    action = wezterm.action.CloseCurrentTab { confirm = true },
+    mods = 'CTRL',
+    action = wezterm.action.CloseCurrentTab { confirm = false },
 }
 }
 for i = 1, 8 do
-  -- CTRL+ALT + number to activate that tab
+  -- CTRL + number to activate that tab
   table.insert(config.keys, {
     key = tostring(i),
-    mods = 'ALT',
+    mods = 'CTRL',
     action = act.ActivateTab(i - 1),
   })
 end

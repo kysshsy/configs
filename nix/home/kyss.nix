@@ -38,6 +38,46 @@
     starship
     tmux
     wezterm
+    (writeShellApplication {
+      name = "focus-or-spawn";
+      runtimeInputs = [ jq niri ];
+      text = ''
+        app_id="$1"
+        shift
+
+        # Prefer an existing matching window that is not currently focused.
+        window_id="$(niri msg --json windows | jq -r --arg app_id "$app_id" '
+          [.[] | select(.app_id == $app_id) | { id, is_focused }]
+          | sort_by(.is_focused)
+          | .[0].id // empty
+        ')"
+
+        if [ -n "$window_id" ]; then
+          exec niri msg action focus-window --id "$window_id"
+        fi
+
+        exec "$@"
+      '';
+    })
+    (writeShellApplication {
+      name = "mac-app-key";
+      runtimeInputs = [ jq niri wtype ];
+      text = ''
+        key="$1"
+        app_id="$(niri msg --json focused-window | jq -r '.app_id // empty')"
+
+        case "$app_id" in
+          org.wezfurlong.wezterm|google-chrome)
+            exec wtype -M ctrl "$key"
+            ;;
+          *)
+            if [ "$key" = "w" ]; then
+              exec niri msg action close-window
+            fi
+            ;;
+        esac
+      '';
+    })
   ];
 
   # The DMS package/version comes from the flake input. Its mutable settings
@@ -120,6 +160,7 @@
       0=Default
     '';
     "niri/config.kdl".source = ./niri.kdl;
+    "niri/niri-shortcuts.kdl".source = ./niri-shortcuts.kdl;
     "wezterm/wezterm.lua".source = ../../terminal/.config/wezterm/wezterm.lua;
   };
 

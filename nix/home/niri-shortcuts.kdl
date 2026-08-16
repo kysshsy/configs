@@ -1,0 +1,57 @@
+// Central macOS-style shortcut layer.
+//
+// IMPORTANT KEY MAP:
+// - `Mod` means niri's logical Super key and is the Command-style layer.
+// - `Alt` means niri's logical Alt key and is used for app launchers.
+// - niri.kdl enables `altwin:swap_alt_win`, so physical Alt and Win/Command
+//   are exchanged before niri sees them. Do not infer the physical key from
+//   the name alone; check the XKB mapping if changing that option.
+//
+// Mod shortcuts are captured by niri and translated to Ctrl only for
+// applications whose native Linux shortcuts use Ctrl. This keeps the same
+// user-facing Command shortcuts across Chrome and WezTerm.
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // Application shortcuts: focus an existing window, or start the app.
+    Alt+1 { spawn "focus-or-spawn" "org.wezfurlong.wezterm" "wezterm"; }
+    Alt+2 { spawn "focus-or-spawn" "google-chrome" "google-chrome-stable"; }
+
+    // Forward Cmd+T/W and Cmd+1..9 as Ctrl shortcuts inside supported apps.
+    Mod+T { spawn "mac-app-key" "t"; }
+    Mod+W { spawn "mac-app-key" "w"; }
+    Mod+1 { spawn "mac-app-key" "1"; }
+    Mod+2 { spawn "mac-app-key" "2"; }
+    Mod+3 { spawn "mac-app-key" "3"; }
+    Mod+4 { spawn "mac-app-key" "4"; }
+    Mod+5 { spawn "mac-app-key" "5"; }
+    Mod+6 { spawn "mac-app-key" "6"; }
+    Mod+7 { spawn "mac-app-key" "7"; }
+    Mod+8 { spawn "mac-app-key" "8"; }
+    Mod+9 { spawn "mac-app-key" "9"; }
+
+    Mod+Space { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+    Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+    Mod+N { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+    Mod+Comma { spawn "dms" "ipc" "call" "settings" "toggle"; }
+    Mod+V { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+    Mod+Shift+P { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    Super+Alt+L { spawn "dms" "ipc" "call" "lock" "lock"; }
+    Mod+Shift+E { quit; }
+}
+
+// Cmd+X / Cmd+Shift+X cycle recently used windows on the current workspace.
+recent-windows {
+    binds {
+        Alt+Tab { next-window; }
+        Alt+Shift+Tab { previous-window; }
+        Alt+grave { next-window filter="app-id"; }
+        Alt+Shift+grave { previous-window filter="app-id"; }
+        Mod+Tab { next-window; }
+        Mod+Shift+Tab { previous-window; }
+        Mod+grave { next-window filter="app-id"; }
+        Mod+Shift+grave { previous-window filter="app-id"; }
+        Mod+X { next-window scope="workspace"; }
+        Mod+Shift+X { previous-window scope="workspace"; }
+    }
+}
