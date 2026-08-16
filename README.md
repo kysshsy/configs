@@ -60,6 +60,13 @@ The repository remains the single source of configuration files:
   Codex.
   Other groups can continue to use Stow once their paths do not overlap.
 
+NixOS intentionally does not consume every dotfile in this repository. The
+top-level Stow groups remain portable configuration for non-Nix systems and
+may include package-manager helpers, local toolchains, proxies, and other
+host-specific settings. A file not referenced by Nix is therefore not
+automatically obsolete and must not be removed solely for that reason. See
+`AGENTS.md` for the repository maintenance rules.
+
 Hardware-dependent files live in `nix/hardware/`; do not use a configuration
 from one machine on another machine. The available targets are:
 
@@ -74,6 +81,18 @@ bare-metal machine with:
 ```bash
 sudo nixos-rebuild switch --flake ~/configs#dev-bare-metal
 ```
+
+After the first successful rebuild, the system also provides shortcuts for the
+current NixOS target:
+
+```bash
+nix-config-check
+nix-config-rebuild
+```
+
+`nix-config-check` runs `nix flake check` without creating or updating a lock
+file. `nix-config-rebuild` runs `sudo nixos-rebuild switch` for the target
+installed on the current machine and will request the sudo password.
 
 This makes configuration changes reviewable in Git and prevents files from
 silently drifting away from the repository.
