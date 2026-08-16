@@ -1,0 +1,11 @@
+complete -c proxy -f
+complete -c proxy -n '__fish_use_subcommand' -a setup -d 'Save controller settings'
+complete -c proxy -n '__fish_use_subcommand' -a status -d 'Show core status'
+complete -c proxy -n '__fish_use_subcommand' -a 'subscriptions providers' -d 'List subscriptions'
+complete -c proxy -n '__fish_use_subcommand' -a update -d 'Refresh a subscription'
+complete -c proxy -n '__fish_use_subcommand' -a groups -d 'List proxy groups'
+complete -c proxy -n '__fish_use_subcommand' -a nodes -d 'List group nodes'
+complete -c proxy -n '__fish_use_subcommand' -a use -d 'Select a node'
+complete -c proxy -n '__fish_use_subcommand' -a mode -d 'Show or switch mode'
+complete -c proxy -n '__fish_use_subcommand' -a help -d 'Show help'
+complete -c proxy -n '__fish_seen_subcommand_from mode' -a 'rule global direct'
