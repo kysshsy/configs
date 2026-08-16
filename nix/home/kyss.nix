@@ -51,10 +51,14 @@
     '';
   };
 
-  # Nix consumes only a portable subset of the shared Stow dotfiles. Other
-  # files, including Fish, remain supported for non-Nix hosts; see AGENTS.md.
+  # Nix consumes only a portable subset of the shared Stow dotfiles. Fish is
+  # linked item by item so its fish_variables state remains writable.
   xdg.configFile = {
-    "fish".source = ../../shell/.config/fish;
+    "fish/config.fish".source = ../../shell/.config/fish/config.fish;
+    "fish/completions".source = ../../shell/.config/fish/completions;
+    "fish/conf.d".source = ../../shell/.config/fish/conf.d;
+    "fish/functions".source = ../../shell/.config/fish/functions;
+    "fish/manual".source = ../../shell/.config/fish/manual;
     "git/config".source = ../../shell/.config/git/config;
     "nvim".source = ../../editor/.config/nvim;
     "starship.toml".source = ../../shell/.config/starship.toml;
