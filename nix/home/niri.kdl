@@ -1,5 +1,5 @@
 // The desktop starts from greetd. Super+T opens a terminal, Super+D opens
-// the application launcher, and Super+Shift+/ lists all Niri shortcuts.
+// the DMS launcher, and Super+Shift+/ lists all Niri shortcuts.
 input {
     keyboard {
         xkb {
@@ -16,9 +16,13 @@ layout {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+T { spawn "wezterm"; }
-    Mod+D { spawn "fuzzel"; }
+    Mod+Space { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+    Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+    Mod+N { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+    Mod+Comma { spawn "dms" "ipc" "call" "settings" "toggle"; }
+    Mod+V { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+    Mod+X { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    Super+Alt+L { spawn "dms" "ipc" "call" "lock" "lock"; }
     Mod+Q { close-window; }
     Mod+Shift+E { quit; }
 }
-
-spawn-at-startup "waybar"
