@@ -7,6 +7,14 @@
       "comment": "Access the Internet",
       "usageCount": 2,
       "lastUsed": 1786883641580
+    },
+    "org.wezfurlong.wezterm": {
+      "name": "WezTerm",
+      "exec": "wezterm start --cwd .",
+      "icon": "org.wezfurlong.wezterm",
+      "comment": "Wez's Terminal Emulator",
+      "usageCount": 1,
+      "lastUsed": 1786884389617
     }
   }
 }
