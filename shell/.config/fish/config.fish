@@ -82,6 +82,11 @@ end
 
 
 ## PATH tweaks and prompt / command-not-found
+# npm's user-level global binaries, including Codex CLI.
+if test -d ~/.npm-packages/bin
+    fish_add_path --prepend ~/.npm-packages/bin
+end
+
 # Add ~/.local/bin to PATH
 if test -d ~/.local/bin
     if not contains -- ~/.local/bin $PATH
