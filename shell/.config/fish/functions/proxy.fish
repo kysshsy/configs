@@ -30,6 +30,47 @@ function proxy --description "Control a running Mihomo controller"
     end
 
     switch $command
+        case init
+            set -l mihomo_dir "$config_home/mihomo"
+            set -l mihomo_config "$mihomo_dir/config.yaml"
+            if test -e "$mihomo_config"
+                echo "Mihomo configuration already exists: $mihomo_config" >&2
+                return 1
+            end
+            command mkdir -p "$mihomo_dir"
+            command chmod 700 "$mihomo_dir"
+            begin
+                echo 'mixed-port: 7890'
+                echo 'allow-lan: false'
+                echo 'mode: rule'
+                echo 'log-level: info'
+                echo 'external-controller: 127.0.0.1:9097'
+                echo 'proxies: []'
+                echo 'proxy-groups:'
+                echo '  - name: GLOBAL'
+                echo '    type: select'
+                echo '    proxies:'
+                echo '      - DIRECT'
+                echo 'rules:'
+                echo '  - MATCH,GLOBAL'
+            end > "$mihomo_config"
+            command chmod 600 "$mihomo_config"
+            echo "Created $mihomo_config"
+            echo "Add a Mihomo-compatible subscription, then run: proxy start"
+
+        case start restart stop
+            if not command -q systemctl
+                echo "systemctl is required to manage the Mihomo background service." >&2
+                return 1
+            end
+            if test "$command" = start
+                command systemctl --user enable --now mihomo.service
+            else if test "$command" = restart
+                command systemctl --user restart mihomo.service
+            else
+                command systemctl --user disable --now mihomo.service
+            end
+
         case setup
             read -P "Mihomo controller [$controller]: " -l input_controller
             if test -n "$input_controller"
@@ -58,6 +99,26 @@ function proxy --description "Control a running Mihomo controller"
         case status
             command curl --silent --show-error --fail $authorization "$controller/version" | jq
             command curl --silent --show-error --fail $authorization "$controller/configs" | jq '{mode, port, "mixed-port": ."mixed-port", "external-controller": ."external-controller"}'
+
+        case on
+            set -l proxy_url "http://127.0.0.1:7890"
+            if test (count $argv) -gt 1
+                set proxy_url "$argv[2]"
+            end
+            if not command curl --silent --show-error --fail --max-time 5 \
+                --proxy "$proxy_url" https://www.gstatic.com/generate_204 >/dev/null 2>&1
+                echo "Proxy is not reachable at $proxy_url; start Mihomo first." >&2
+                return 1
+            end
+            set -gx http_proxy "$proxy_url"
+            set -gx https_proxy "$proxy_url"
+            set -gx HTTP_PROXY "$proxy_url"
+            set -gx HTTPS_PROXY "$proxy_url"
+            echo "Enabled terminal proxy: $proxy_url"
+
+        case off
+            set -e http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+            echo "Disabled terminal proxy for this shell"
 
         case subscriptions providers
             command curl --silent --show-error --fail $authorization "$controller/providers/proxies" \
@@ -118,8 +179,12 @@ function proxy --description "Control a running Mihomo controller"
 
         case help -h --help
             echo "Usage: proxy <command>"
+            echo "  init                          Create private Mihomo configuration"
+            echo "  start|restart|stop             Manage the background Mihomo service"
             echo "  setup                         Save private controller settings"
             echo "  status                        Show core version and mode"
+            echo "  on [url]                      Enable proxy variables in this shell"
+            echo "  off                           Disable proxy variables in this shell"
             echo "  subscriptions | providers     List configured subscriptions"
             echo "  update <subscription>         Refresh one subscription"
             echo "  groups                        List selectable proxy groups"

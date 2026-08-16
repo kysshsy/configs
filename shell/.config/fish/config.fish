@@ -283,11 +283,6 @@ end
 set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin /home/kyss/.ghcup/bin $PATH # ghcup-env
 
 
-## Proxy
-export http_proxy=http://127.0.0.1:7890
-export https_proxy=$http_proxy
-
-
 ## Rejoin tmux on interactive login (Linux only).
 if status --is-interactive; and status --is-login; and not set -q TMUX; \
    and command -q tmux; and test (uname) = "Linux"

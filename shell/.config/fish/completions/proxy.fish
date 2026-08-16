@@ -1,6 +1,10 @@
 complete -c proxy -f
+complete -c proxy -n '__fish_use_subcommand' -a init -d 'Create private Mihomo configuration'
+complete -c proxy -n '__fish_use_subcommand' -a 'start restart stop' -d 'Manage Mihomo service'
 complete -c proxy -n '__fish_use_subcommand' -a setup -d 'Save controller settings'
 complete -c proxy -n '__fish_use_subcommand' -a status -d 'Show core status'
+complete -c proxy -n '__fish_use_subcommand' -a on -d 'Enable proxy variables in this shell'
+complete -c proxy -n '__fish_use_subcommand' -a off -d 'Disable proxy variables in this shell'
 complete -c proxy -n '__fish_use_subcommand' -a 'subscriptions providers' -d 'List subscriptions'
 complete -c proxy -n '__fish_use_subcommand' -a update -d 'Refresh a subscription'
 complete -c proxy -n '__fish_use_subcommand' -a groups -d 'List proxy groups'
