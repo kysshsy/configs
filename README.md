@@ -56,7 +56,8 @@ The repository remains the single source of configuration files:
 - On NixOS, the Flake reads selected files directly from this repository and
   installs their Nix-store links through Home Manager.
 - Never run Stow for a path owned by Home Manager on NixOS. In the current
-  setup those paths are Git, Neovim, Starship, WezTerm, Zellij, and tmux.
+  setup those paths are Git, Neovim, Starship, WezTerm, Zellij, tmux, and
+  Codex.
   Other groups can continue to use Stow once their paths do not overlap.
 
 For example, after changing `editor/.config/nvim/` in this repository, apply

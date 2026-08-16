@@ -19,7 +19,14 @@
   # under the user's home directory instead of attempting to mutate Nix files.
   home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-packages";
   home.sessionPath = [ "${config.home.homeDirectory}/.npm-packages/bin" ];
-  programs.bash.enable = true;
+  home.file.".npmrc".text = "prefix=${config.home.homeDirectory}/.npm-packages\n";
+  programs.bash = {
+    enable = true;
+    # Interactive SSH shells read .bashrc, not necessarily .profile.
+    bashrcExtra = ''
+      export PATH="$HOME/.npm-packages/bin:$PATH"
+    '';
+  };
 
   # These files are portable user-level preferences. Fish is excluded because
   # its current config contains Arch, proxy, Conda, and machine-specific paths.
@@ -33,5 +40,6 @@
   };
 
   home.file.".tmux.conf".source = ../../shell/.tmux.conf;
+  home.file.".codex/config.toml".source = ../../agentic/.codex/config.toml;
   programs.home-manager.enable = true;
 }
