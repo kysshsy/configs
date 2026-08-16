@@ -30,6 +30,7 @@
   services.xserver.xkb.layout = "us";
   services.qemuGuest.enable = true;
   hardware.graphics.enable = true;
+  hardware.enableRedistributableFirmware = true;
 
   users.users.kyss = {
     isNormalUser = true;
