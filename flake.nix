@@ -11,8 +11,9 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      mkNixos = hardwareModule: nixpkgs.lib.nixosSystem {
+      mkNixos = { hardwareModule, configurationName }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs.configurationName = configurationName;
         modules = [
           hardwareModule
           ./nix/hosts/nixos-niri
@@ -26,8 +27,14 @@
       };
     in {
       nixosConfigurations = {
-        dev-bare-metal = mkNixos ./nix/hardware/dev-bare-metal.nix;
-        pve-niri-vm = mkNixos ./nix/hardware/pve-niri-vm.nix;
+        dev-bare-metal = mkNixos {
+          hardwareModule = ./nix/hardware/dev-bare-metal.nix;
+          configurationName = "dev-bare-metal";
+        };
+        pve-niri-vm = mkNixos {
+          hardwareModule = ./nix/hardware/pve-niri-vm.nix;
+          configurationName = "pve-niri-vm";
+        };
       };
     };
 }

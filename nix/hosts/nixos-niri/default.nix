@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ configurationName, pkgs, ... }:
 
 {
   imports = [
@@ -56,6 +56,18 @@
     nano
     nodejs_22
     wget
+    (writeShellApplication {
+      name = "nix-config-check";
+      text = ''
+        exec nix flake check --no-write-lock-file /home/kyss/configs
+      '';
+    })
+    (writeShellApplication {
+      name = "nix-config-rebuild";
+      text = ''
+        exec sudo nixos-rebuild switch --flake /home/kyss/configs#${configurationName} "$@"
+      '';
+    })
   ];
 
   system.stateVersion = "26.05";
