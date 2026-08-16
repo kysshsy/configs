@@ -55,6 +55,9 @@ The repository remains the single source of configuration files:
 - On macOS and other conventional hosts, use Stow as documented above.
 - On NixOS, the Flake reads selected files directly from this repository and
   installs their Nix-store links through Home Manager.
+- DMS uses directory links to `nix/dms/config/` and `nix/dms/state/` instead,
+  so changes made in its settings UI are written directly to this checkout and
+  appear in `git status`.
 - Never run Stow for a path owned by Home Manager on NixOS. In the current
   setup those paths are Git, Neovim, Starship, WezTerm, Zellij, tmux, and
   Codex.
@@ -86,12 +89,12 @@ After the first successful rebuild, the system also provides shortcuts for the
 current NixOS target:
 
 ```bash
-nix-config-check
-nix-config-rebuild
+nix-check
+nix-rebuild
 ```
 
-`nix-config-check` runs `nix flake check` without creating or updating a lock
-file. `nix-config-rebuild` runs `sudo nixos-rebuild switch` for the target
+`nix-check` runs `nix flake check` without creating or updating a lock
+file. `nix-rebuild` runs `sudo nixos-rebuild switch` for the target
 installed on the current machine and will request the sudo password.
 
 This makes configuration changes reviewable in Git and prevents files from

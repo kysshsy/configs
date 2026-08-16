@@ -1,0 +1,4 @@
+# DMS runtime state, not portable user configuration.
+/notepad-files/
+/notepad-session.json
+/pam/

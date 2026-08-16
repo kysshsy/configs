@@ -40,15 +40,27 @@
     wezterm
   ];
 
-  # Keep DMS settings mutable during the trial, so its settings UI can adjust
-  # panel placement and module order. Once the layout is settled, record it
-  # declaratively in this repository.
+  # The DMS package/version comes from the flake input. Its mutable settings
+  # live in this checkout through out-of-store directory symlinks, so changes
+  # made in the DMS UI are visible to Git immediately.
   programs.dank-material-shell = {
     enable = true;
     systemd.enable = true;
     enableAudioWavelength = false;
     enableCalendarEvents = false;
     enableDynamicTheming = false;
+  };
+
+  xdg.configFile."DankMaterialShell" = {
+    source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/configs/nix/dms/config";
+    force = true;
+  };
+
+  home.file.".local/state/DankMaterialShell" = {
+    source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/configs/nix/dms/state";
+    force = true;
   };
 
   # Mihomo runs independently from the optional Clash Verge graphical client.
