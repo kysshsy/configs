@@ -28,6 +28,7 @@
   };
 
   services.xserver.xkb.layout = "us";
+  services.qemuGuest.enable = true;
   hardware.graphics.enable = true;
   hardware.enableRedistributableFirmware = true;
 
@@ -40,10 +41,10 @@
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
 
-    # USTC is currently faster from this host; keep the official cache as a
-    # fallback when a path is not available from the mainland mirror.
+    # Prefer the mainland mirror for binary packages, while retaining the
+    # official cache when a path has not reached the mirror yet.
     substituters = [
-      "https://mirrors.ustc.edu.cn/nix-channels/store"
+      "https://mirror.sjtu.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
     ];
   };
