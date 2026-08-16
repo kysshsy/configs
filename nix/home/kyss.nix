@@ -10,6 +10,9 @@
     awscli2
     gh
 
+    # Network and proxy client.
+    clash-verge-rev
+
     # File viewing and directory navigation.
     bat
     eza
