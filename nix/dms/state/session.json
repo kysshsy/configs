@@ -85,8 +85,10 @@
   "notepadLastMode": "",
   "launcherLastMode": "all",
   "launcherLastFileSearchType": "all",
-  "launcherLastQuery": "",
-  "launcherQueryHistory": [],
+  "launcherLastQuery": "ch",
+  "launcherQueryHistory": [
+    "ch"
+  ],
   "appDrawerLastMode": "all",
   "niriOverviewLastMode": "apps",
   "settingsSidebarExpandedIds": ",power_security,",

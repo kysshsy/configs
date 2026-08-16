@@ -1,0 +1,12 @@
+{
+  "appUsageRanking": {
+    "google-chrome": {
+      "name": "Google Chrome",
+      "exec": "/nix/store/dn8ckawh6ipv57gdlf57zb8yy46y3dxf-google-chrome-151.0.7922.137/bin/google-chrome-stable %U",
+      "icon": "google-chrome",
+      "comment": "Access the Internet",
+      "usageCount": 2,
+      "lastUsed": 1786883641580
+    }
+  }
+}

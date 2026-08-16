@@ -4,6 +4,7 @@ input {
     keyboard {
         xkb {
             layout "us"
+            options "altwin:swap_alt_win"
         }
     }
 }
