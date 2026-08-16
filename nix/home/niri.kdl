@@ -8,6 +8,14 @@ input {
     }
 }
 
+environment {
+    GTK_IM_MODULE "fcitx"
+    QT_IM_MODULE "fcitx"
+    XMODIFIERS "@im=fcitx"
+}
+
+spawn-at-startup "fcitx5" "-d"
+
 layout {
     gaps 12
     default-column-width { proportion 0.6; }

@@ -90,8 +90,40 @@
     "git/config".source = ../../shell/.config/git/config;
     "nvim".source = ../../editor/.config/nvim;
     "starship.toml".source = ../../shell/.config/starship.toml;
+    "fcitx5/profile".text = ''
+      [Groups/0]
+      Name=Default
+      Default Layout=us
+      DefaultIM=rime
+
+      [Groups/0/Items/0]
+      Name=keyboard-us
+      Layout=
+
+      [Groups/0/Items/1]
+      Name=rime
+      Layout=
+
+      [GroupOrder]
+      0=Default
+    '';
     "niri/config.kdl".source = ./niri.kdl;
     "wezterm/wezterm.lua".source = ../../terminal/.config/wezterm/wezterm.lua;
+  };
+
+  # Rime reads user schemas from XDG data. Xiaohe double pinyin emits
+  # simplified Chinese by default.
+  xdg.dataFile = {
+    "fcitx5/rime/default.custom.yaml".text = ''
+      patch:
+        __include: rime_ice_suggestion:/
+        schema_list:
+          - schema: double_pinyin_flypy
+    '';
+    "fcitx5/rime/double_pinyin_flypy.custom.yaml".text = ''
+      patch:
+        "switches/@2/reset": 0
+    '';
   };
 
   home.file.".tmux.conf".source = ../../shell/.tmux.conf;

@@ -27,6 +27,15 @@
   };
 
   services.xserver.xkb.layout = "us";
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = [
+      (pkgs.fcitx5-rime.override {
+        rimeDataPkgs = [ pkgs.rime-ice ];
+      })
+    ];
+  };
   hardware.graphics.enable = true;
   hardware.enableRedistributableFirmware = true;
 
