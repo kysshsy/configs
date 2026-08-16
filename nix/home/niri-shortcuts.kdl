@@ -1,11 +1,10 @@
 // Central macOS-style shortcut layer.
 //
 // IMPORTANT KEY MAP:
-// - `Mod` means niri's logical Super key and is the Command-style layer.
-// - `Alt` means niri's logical Alt key and is used for app launchers.
-// - niri.kdl enables `altwin:swap_alt_win`, so physical Alt and Win/Command
-//   are exchanged before niri sees them. Do not infer the physical key from
-//   the name alone; check the XKB mapping if changing that option.
+// - `Mod` means niri's logical Super key and is the macOS Command layer.
+// - `Alt` means niri's logical Alt key and is the macOS Option layer.
+// - niri.kdl swaps physical Alt and Win. On a Windows-layout keyboard this
+//   makes the key next to Space act as Command and the Win key act as Option.
 //
 // Mod shortcuts are captured by niri and translated to Ctrl only for
 // applications whose native Linux shortcuts use Ctrl. This keeps the same

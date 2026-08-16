@@ -1,9 +1,9 @@
 // Keyboard naming used below:
-// - Mod is niri's logical Super key (the macOS-style Command layer).
-// - Alt is the logical Alt key.
-// - This config swaps the physical Alt and Win/Command keys via
-//   `altwin:swap_alt_win` below. Therefore Mod/Alt refer to logical key
-//   symbols, not necessarily the labels printed on the physical keyboard.
+// - Mod is niri's logical Super key, used as the macOS Command layer.
+// - Alt is the logical Alt key, used as the macOS Option layer.
+// - On a Windows-layout keyboard, Command occupies the physical Alt position
+//   next to Space and Option occupies the physical Win position. Swap Alt and
+//   Win so the physical positions match a Mac keyboard.
 //
 // The desktop starts from greetd. Mod+D opens the DMS launcher, and
 // Mod+Shift+/ lists all Niri shortcuts.
