@@ -29,14 +29,23 @@
     hwinfo
     pass
 
-    # Terminal applications and Niri desktop components.
-    fuzzel
+    # Terminal applications.
     neovim
     starship
     tmux
-    waybar
     wezterm
   ];
+
+  # Keep DMS settings mutable during the trial, so its settings UI can adjust
+  # panel placement and module order. Once the layout is settled, record it
+  # declaratively in this repository.
+  programs.dank-material-shell = {
+    enable = true;
+    systemd.enable = true;
+    enableAudioWavelength = false;
+    enableCalendarEvents = false;
+    enableDynamicTheming = false;
+  };
 
   # Node.js itself is immutable in the Nix store. npm therefore installs Codex
   # under the user's home directory instead of attempting to mutate Nix files.

@@ -7,9 +7,12 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # GitHub archive downloads are unreliable on this network. The lock file
+    # pins the unpacked source hash, so this transport mirror cannot alter it.
+    dms.url = "tarball+https://ghfast.top/https://github.com/AvengeMedia/DankMaterialShell/archive/069ddab041c738236a8910e4c39b65d9628d3018.tar.gz";
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { nixpkgs, home-manager, dms, ... }:
     let
       mkNixos = { hardwareModule, configurationName }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -21,7 +24,12 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.kyss = import ./nix/home/kyss.nix;
+            home-manager.users.kyss = {
+              imports = [
+                dms.homeModules.dank-material-shell
+                ./nix/home/kyss.nix
+              ];
+            };
           }
         ];
       };
