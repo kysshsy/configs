@@ -70,8 +70,8 @@ no GitHub private key is needed:
 ```bash
 nix-shell -p git --run 'git clone https://github.com/kysshsy/configs.git ~/configs'
 cd ~/configs/nix
-nix flake lock
-sudo nixos-rebuild switch --flake .#nixos-niri
+nix --extra-experimental-features 'nix-command flakes' flake lock
+sudo nixos-rebuild switch --flake .#nixos-niri --option experimental-features 'nix-command flakes'
 ```
 
 The rebuild turns off SSH password and keyboard-interactive authentication.
