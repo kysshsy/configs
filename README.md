@@ -43,3 +43,56 @@ stow -Dv -t "$HOME" shell editor terminal
 如果 `$HOME` 中已经存在同名的普通文件或目录（不是由 stow 创建的符号链接），stow 不会覆盖这些目标，而是报告冲突并跳过对应条目。这种情况下需要先自行备份并移除原有文件，再重新执行安装。
 
 [GNU Stow]: https://www.gnu.org/software/stow/
+
+## NixOS
+
+`nix/` contains the declarative NixOS configuration for the PVE guest named
+`nixos-niri`. It intentionally leaves the existing Stow groups unchanged;
+Home Manager imports only portable Git, editor, and terminal preferences.
+
+The repository remains the single source of configuration files:
+
+- On macOS and other conventional hosts, use Stow as documented above.
+- On NixOS, the Flake reads selected files directly from this repository and
+  installs their Nix-store links through Home Manager.
+- Never run Stow for a path owned by Home Manager on NixOS. In the current
+  setup those paths are Git, Neovim, Starship, WezTerm, Zellij, and tmux.
+  Other groups can continue to use Stow once their paths do not overlap.
+
+For example, after changing `editor/.config/nvim/` in this repository, apply
+that change on NixOS with `sudo nixos-rebuild switch --flake ~/configs/nix#nixos-niri`.
+This makes configuration changes reviewable in Git and prevents files from
+silently drifting away from the repository.
+
+For the first deployment, clone this public repository over HTTPS on NixOS so
+no GitHub private key is needed:
+
+```bash
+nix-shell -p git --run 'git clone https://github.com/kysshsy/configs.git ~/configs'
+cd ~/configs/nix
+nix flake lock
+sudo nixos-rebuild switch --flake .#nixos-niri
+```
+
+The rebuild turns off SSH password and keyboard-interactive authentication.
+Keep the current SSH connection open and verify a second connection with your
+Mac key before closing it:
+
+```bash
+ssh -o PasswordAuthentication=no kyss@192.168.0.107
+```
+
+After reconnecting, install the npm Codex CLI as `kyss` (not with `sudo`):
+
+```bash
+npm install -g @openai/codex
+codex
+```
+
+Node.js and npm are supplied by Nix. The Flake directs npm's mutable global
+packages to `~/.npm-packages`, while the executable is added to the shell PATH.
+
+The Niri desktop starts from the PVE console after the rebuild. Log in as
+`kyss`, then use `Super+T` for WezTerm, `Super+D` for the launcher, and
+`Super+Shift+/` for the complete shortcut overlay. SSH remains available as
+the recovery and administration path.
