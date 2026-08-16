@@ -29,6 +29,7 @@
 
   services.xserver.xkb.layout = "us";
   services.qemuGuest.enable = true;
+  hardware.graphics.enable = true;
 
   users.users.kyss = {
     isNormalUser = true;
