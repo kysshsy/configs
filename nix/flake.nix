@@ -14,12 +14,12 @@
       nixosConfigurations.nixos-niri = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./nix/hosts/nixos-niri
+          ./hosts/nixos-niri
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.kyss = import ./nix/home/kyss.nix;
+            home-manager.users.kyss = import ./home/kyss.nix;
           }
         ];
       };

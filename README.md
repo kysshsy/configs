@@ -61,7 +61,7 @@ The repository remains the single source of configuration files:
   Other groups can continue to use Stow once their paths do not overlap.
 
 For example, after changing `editor/.config/nvim/` in this repository, apply
-that change on NixOS with `sudo nixos-rebuild switch --flake ~/configs#nixos-niri`.
+that change on NixOS with `sudo nixos-rebuild switch --flake ~/configs/nix#nixos-niri`.
 This makes configuration changes reviewable in Git and prevents files from
 silently drifting away from the repository.
 
