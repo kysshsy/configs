@@ -66,13 +66,13 @@
     nodejs_22
     wget
     (writeShellApplication {
-      name = "nix-config-check";
+      name = "nix-check";
       text = ''
         exec nix flake check --no-write-lock-file /home/kyss/configs
       '';
     })
     (writeShellApplication {
-      name = "nix-config-rebuild";
+      name = "nix-rebuild";
       text = ''
         exec sudo nixos-rebuild switch --flake /home/kyss/configs#${configurationName} "$@"
       '';
