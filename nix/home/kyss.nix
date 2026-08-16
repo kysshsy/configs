@@ -67,7 +67,15 @@
         app_id="$(niri msg --json focused-window | jq -r '.app_id // empty')"
 
         case "$app_id" in
-          org.wezfurlong.wezterm|google-chrome)
+          google-chrome)
+            # Chromium only recognizes Ctrl+2's NUL character when the
+            # synthetic key occupies the standard Digit2 keycode.
+            if [ "$key" = "2" ]; then
+              exec wtype -k F13 -k F14 -M ctrl "$key"
+            fi
+            exec wtype -M ctrl "$key"
+            ;;
+          org.wezfurlong.wezterm)
             exec wtype -M ctrl "$key"
             ;;
           *)

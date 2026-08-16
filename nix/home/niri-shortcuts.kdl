@@ -16,8 +16,9 @@ binds {
     Alt+1 { spawn "focus-or-spawn" "org.wezfurlong.wezterm" "wezterm"; }
     Alt+2 { spawn "focus-or-spawn" "google-chrome" "google-chrome-stable"; }
 
-    // Forward Cmd+T/W and Cmd+1..9 as Ctrl shortcuts inside supported apps.
+    // Forward Cmd+T/R/W and Cmd+1..9 as Ctrl shortcuts inside supported apps.
     Mod+T { spawn "mac-app-key" "t"; }
+    Mod+R { spawn "mac-app-key" "r"; }
     Mod+W { spawn "mac-app-key" "w"; }
     Mod+1 { spawn "mac-app-key" "1"; }
     Mod+2 { spawn "mac-app-key" "2"; }
