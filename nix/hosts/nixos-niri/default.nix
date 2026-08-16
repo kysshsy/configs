@@ -30,9 +30,12 @@
   hardware.graphics.enable = true;
   hardware.enableRedistributableFirmware = true;
 
+  programs.fish.enable = true;
+
   users.users.kyss = {
     isNormalUser = true;
     description = "kyss";
+    shell = pkgs.fish;
     extraGroups = [ "networkmanager" "wheel" ];
   };
 

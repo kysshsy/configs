@@ -6,13 +6,36 @@
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
+    # Cloud and developer service clients.
+    awscli2
+    gh
+
+    # File viewing and directory navigation.
+    bat
+    eza
+    fastfetch
+    fd
+    tree
+    zoxide
+
+    # Interactive search, command help, and structured/text data queries.
+    fzf
+    jq
+    ripgrep
+    tldr
+    ugrep
+
+    # Security and local system inspection.
+    hwinfo
+    pass
+
+    # Terminal applications and Niri desktop components.
     fuzzel
     neovim
     starship
     tmux
     waybar
     wezterm
-    zellij
   ];
 
   # Node.js itself is immutable in the Nix store. npm therefore installs Codex
@@ -28,15 +51,15 @@
     '';
   };
 
-  # These files are portable user-level preferences. Fish is excluded because
-  # its current config contains Arch, proxy, Conda, and machine-specific paths.
+  # Nix consumes only a portable subset of the shared Stow dotfiles. Other
+  # files, including Fish, remain supported for non-Nix hosts; see AGENTS.md.
   xdg.configFile = {
+    "fish".source = ../../shell/.config/fish;
     "git/config".source = ../../shell/.config/git/config;
     "nvim".source = ../../editor/.config/nvim;
     "starship.toml".source = ../../shell/.config/starship.toml;
     "niri/config.kdl".source = ./niri.kdl;
     "wezterm/wezterm.lua".source = ../../terminal/.config/wezterm/wezterm.lua;
-    "zellij/config.kdl".source = ../../terminal/.config/zellij/config.kdl;
   };
 
   home.file.".tmux.conf".source = ../../shell/.tmux.conf;
