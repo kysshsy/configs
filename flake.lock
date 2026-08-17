@@ -89,7 +89,29 @@
       "inputs": {
         "dms": "dms",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "toshy": "toshy"
+      }
+    },
+    "toshy": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785985265,
+        "narHash": "sha256-mGg8tJXxuDWamgYnZ/1qwew/CAVLlU6w6CxQ0J67uN0=",
+        "ref": "main",
+        "rev": "41119ab6fbfc910187d13748a3e71bfe922fe06a",
+        "revCount": 3079,
+        "type": "git",
+        "url": "https://github.com/RedBearAK/toshy.git"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "https://github.com/RedBearAK/toshy.git"
       }
     }
   },

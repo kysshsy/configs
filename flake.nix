@@ -10,9 +10,13 @@
     # GitHub archive downloads are unreliable on this network. The lock file
     # pins the unpacked source hash, so this transport mirror cannot alter it.
     dms.url = "tarball+https://ghfast.top/https://github.com/AvengeMedia/DankMaterialShell/archive/069ddab041c738236a8910e4c39b65d9628d3018.tar.gz";
+    toshy = {
+      url = "git+https://github.com/RedBearAK/toshy.git?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, dms, ... }:
+  outputs = { nixpkgs, home-manager, dms, toshy, ... }:
     let
       mkNixos = { hardwareModule, configurationName }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -20,13 +24,16 @@
         modules = [
           hardwareModule
           ./nix/hosts/nixos-niri
+          toshy.nixosModules.toshy
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit toshy; };
             home-manager.users.kyss = {
               imports = [
                 dms.homeModules.dank-material-shell
+                toshy.homeManagerModules.toshy
                 ./nix/home/kyss.nix
               ];
             };

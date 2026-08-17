@@ -12,6 +12,14 @@
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   hardware.bluetooth.enable = true;
+  # Toshy emits remapped keystrokes through /dev/uinput.  The NixOS module
+  # owns the device rule and grants access to members of the uinput group.
+  hardware.uinput.enable = true;
+
+  services.toshy = {
+    enable = true;
+    users = [ "kyss" ];
+  };
 
   time.timeZone = "Asia/Shanghai";
   i18n.defaultLocale = "zh_CN.UTF-8";
@@ -46,7 +54,7 @@
     isNormalUser = true;
     description = "kyss";
     shell = pkgs.fish;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "uinput" ];
   };
 
   nix.settings = {

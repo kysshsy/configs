@@ -1,34 +1,5 @@
-// Central macOS-style shortcut layer.
-//
-// IMPORTANT KEY MAP:
-// - `Mod` means niri's logical Super key and is the macOS Command layer.
-// - `Alt` means niri's logical Alt key and is the macOS Option layer.
-// - niri.kdl swaps physical Alt and Win. On a Windows-layout keyboard this
-//   makes the key next to Space act as Command and the Win key act as Option.
-//
-// Mod shortcuts are captured by niri and translated to Ctrl only for
-// applications whose native Linux shortcuts use Ctrl. This keeps the same
-// user-facing Command shortcuts across Chrome and WezTerm.
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
-
-    // Application shortcuts: focus an existing window, or start the app.
-    Alt+1 { spawn "focus-or-spawn" "org.wezfurlong.wezterm" "wezterm"; }
-    Alt+2 { spawn "focus-or-spawn" "google-chrome" "google-chrome-stable"; }
-
-    // Forward Cmd+T/R/W and Cmd+1..9 as Ctrl shortcuts inside supported apps.
-    Mod+T { spawn "mac-app-key" "t"; }
-    Mod+R { spawn "mac-app-key" "r"; }
-    Mod+W { spawn "mac-app-key" "w"; }
-    Mod+1 { spawn "mac-app-key" "1"; }
-    Mod+2 { spawn "mac-app-key" "2"; }
-    Mod+3 { spawn "mac-app-key" "3"; }
-    Mod+4 { spawn "mac-app-key" "4"; }
-    Mod+5 { spawn "mac-app-key" "5"; }
-    Mod+6 { spawn "mac-app-key" "6"; }
-    Mod+7 { spawn "mac-app-key" "7"; }
-    Mod+8 { spawn "mac-app-key" "8"; }
-    Mod+9 { spawn "mac-app-key" "9"; }
 
     Mod+Space { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
     Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }

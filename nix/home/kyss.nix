@@ -1,4 +1,29 @@
-{ config, pkgs, ... }:
+{ config, pkgs, toshy, ... }:
+
+let
+  toshySource = pkgs.applyPatches {
+    name = "toshy-patched";
+    src = toshy;
+    patches = [ (builtins.toFile "toshy-setuptools.patch" ''
+      diff --git a/nix/toshy-runtime.nix b/nix/toshy-runtime.nix
+      --- a/nix/toshy-runtime.nix
+      +++ b/nix/toshy-runtime.nix
+      @@ -62,7 +62,11 @@ let
+               build-system = [
+      -          (pyFinal.setuptools-scm.override { setuptools = pyFinal.setuptools_80; })
+      +          (pyFinal.setuptools-scm.override { setuptools = pyFinal.setuptools; })
+               ];
+               dependencies = [ pyFinal.six ];
+               doCheck = false;
+               pythonImportsCheck = [ "Xlib" ];
+             };
+      +
+      +      i3ipc = pyPrev.i3ipc.overridePythonAttrs (old: {
+      +        dependencies = [ pyFinal.python-xlib ];
+      +      });
+    '') ];
+  };
+in
 
 {
   home.username = "kyss";
@@ -38,55 +63,16 @@
     starship
     tmux
     wezterm
-    (writeShellApplication {
-      name = "focus-or-spawn";
-      runtimeInputs = [ jq niri ];
-      text = ''
-        app_id="$1"
-        shift
-
-        # Prefer an existing matching window that is not currently focused.
-        window_id="$(niri msg --json windows | jq -r --arg app_id "$app_id" '
-          [.[] | select(.app_id == $app_id) | { id, is_focused }]
-          | sort_by(.is_focused)
-          | .[0].id // empty
-        ')"
-
-        if [ -n "$window_id" ]; then
-          exec niri msg action focus-window --id "$window_id"
-        fi
-
-        exec "$@"
-      '';
-    })
-    (writeShellApplication {
-      name = "mac-app-key";
-      runtimeInputs = [ jq niri wtype ];
-      text = ''
-        key="$1"
-        app_id="$(niri msg --json focused-window | jq -r '.app_id // empty')"
-
-        case "$app_id" in
-          google-chrome)
-            # Chromium only recognizes Ctrl+2's NUL character when the
-            # synthetic key occupies the standard Digit2 keycode.
-            if [ "$key" = "2" ]; then
-              exec wtype -k F13 -k F14 -M ctrl "$key"
-            fi
-            exec wtype -M ctrl "$key"
-            ;;
-          org.wezfurlong.wezterm)
-            exec wtype -M ctrl "$key"
-            ;;
-          *)
-            if [ "$key" = "w" ]; then
-              exec niri msg action close-window
-            fi
-            ;;
-        esac
-      '';
-    })
   ];
+
+  services.toshy = {
+    enable = true;
+    # Toshy's current runtime names the compatible setuptools package
+    # setuptools_80, while nixpkgs 26.05 exposes it as setuptools.
+    runtimePackage = pkgs.callPackage "${toshySource}/nix/toshy-runtime.nix" {
+      toshySrc = toshySource;
+    };
+  };
 
   # The DMS package/version comes from the flake input. Its mutable settings
   # live in this checkout through out-of-store directory symlinks, so changes
