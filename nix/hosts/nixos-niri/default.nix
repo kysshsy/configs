@@ -75,6 +75,7 @@
     google-chrome
     nano
     nodejs_22
+    vscode
     wget
     (writeShellApplication {
       name = "nix-check";
