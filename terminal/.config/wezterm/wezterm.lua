@@ -7,25 +7,23 @@ config.color_scheme = 'Dracula+'
 -- set font
 config.font = wezterm.font('DejaVu Sans Mono',{})
 
-config.keys = {
-{
-    key = 't',
-    mods = 'CTRL',
-    action = act.SpawnTab 'CurrentPaneDomain',
-},
-{
-    key = 'w',
-    mods = 'CTRL',
-    action = wezterm.action.CloseCurrentTab { confirm = false },
-}
-}
-for i = 1, 8 do
-  -- CTRL + number to activate that tab
-  table.insert(config.keys, {
-    key = tostring(i),
-    mods = 'CTRL',
-    action = act.ActivateTab(i - 1),
-  })
+-- macOS already has native Cmd+T/W and Cmd+1..8 bindings. On Linux Toshy
+-- reserves Ctrl+Shift+1..8 as the destination for a real Cmd+number, keeping
+-- physical Ctrl+number available to terminal applications.
+if not wezterm.target_triple:find('apple%-darwin') then
+  config.keys = {}
+  for i = 1, 8 do
+    table.insert(config.keys, {
+      key = tostring(i),
+      mods = 'CTRL',
+      action = act.DisableDefaultAssignment,
+    })
+    table.insert(config.keys, {
+      key = tostring(i),
+      mods = 'CTRL|SHIFT',
+      action = act.ActivateTab(i - 1),
+    })
+  end
 end
 
 

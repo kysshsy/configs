@@ -97,6 +97,11 @@ in
     force = true;
   };
 
+  # Reserve no global Rime shortcuts for punctuation or traditional-character
+  # modes; Cmd+number remains available for terminal tab navigation.
+  xdg.dataFile."fcitx5/rime/default.custom.yaml".source =
+    ../rime/default.custom.yaml;
+
   # Mihomo runs independently from the optional Clash Verge graphical client.
   # The private configuration must contain a real subscription before startup.
   systemd.user.services.mihomo = {

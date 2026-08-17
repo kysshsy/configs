@@ -1,0 +1,13 @@
+patch:
+  __include: rime_ice_suggestion:/
+  schema_list:
+    - schema: double_pinyin_flypy
+  # Keep only composition navigation. Do not reserve global shortcut keys for
+  # punctuation or simplified/traditional conversion.
+  key_binder/bindings:
+    - {accept: "Shift+Tab", send: "Shift+Left", when: composing}
+    - {accept: Tab, send: "Shift+Right", when: composing}
+    - {accept: "Alt+Left", send: "Shift+Left", when: composing}
+    - {accept: "Alt+Right", send: "Shift+Right", when: composing}
+    - {accept: minus, send: Page_Up, when: has_menu}
+    - {accept: equal, send: Page_Down, when: has_menu}
