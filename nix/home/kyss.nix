@@ -167,6 +167,11 @@
       [GroupOrder]
       0=Default
     '';
+    "fcitx5/conf/global.conf".text = ''
+      [Behavior]
+      ShareInputState=No
+      ResetStateWhenFocusIn=No
+    '';
     "niri/config.kdl".source = ./niri.kdl;
     "niri/niri-shortcuts.kdl".source = ./niri-shortcuts.kdl;
     "wezterm/wezterm.lua".source = ../../terminal/.config/wezterm/wezterm.lua;
