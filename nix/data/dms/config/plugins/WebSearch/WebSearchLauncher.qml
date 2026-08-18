@@ -52,7 +52,8 @@ QtObject {
                     icon: link.icon || "material:link",
                     comment: link.url,
                     action: "open:" + link.url,
-                    categories: ["Quick Links"]
+                    categories: ["Quick Links"],
+                    _preScored: 20000
                 };
             });
         }
@@ -65,7 +66,8 @@ QtObject {
                 icon: "material:search",
                 comment: searchUrlTemplate.replace("%s", googleTerm),
                 action: "open:" + searchUrlTemplate.replace("%s", encodedTerm),
-                categories: ["Quick Links"]
+                categories: ["Quick Links"],
+                _preScored: 20000
             }];
         }
 
