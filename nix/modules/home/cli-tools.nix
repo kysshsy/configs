@@ -17,5 +17,6 @@
     ugrep
     hwinfo
     pass
+    uv
   ];
 }
