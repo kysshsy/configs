@@ -2,13 +2,29 @@ patch:
   __include: rime_ice_suggestion:/
   schema_list:
     - schema: double_pinyin_flypy
-  # Replace Rime Ice's default bindings. In particular, do not keep its
-  # Control+Shift+4 traditionalization shortcut: Toshy maps Cmd to Ctrl on
-  # Linux, so that default binding otherwise leaks through as Cmd+Shift+4.
-  key_binder/bindings: []
-  # Explicitly delete Rime Ice's inherited global toggles. The generated
-  # schema may otherwise retain them even when the list above is replaced.
-  "key_binder/bindings/@9": null
-  "key_binder/bindings/@8": null
-  "key_binder/bindings/@7": null
-  "key_binder/bindings/@6": null
+  # Keep Rime Ice's composing/candidate navigation bindings, but omit its
+  # always-active punctuation and traditionalization toggles. Toshy maps Cmd
+  # to Ctrl on Linux, so those global bindings can leak into normal input.
+  key_binder/bindings:
+    - {accept: "Shift+Tab", send: "Shift+Left", when: composing}
+    - {accept: Tab, send: "Shift+Right", when: composing}
+    - {accept: "Alt+Left", send: "Shift+Left", when: composing}
+    - {accept: "Alt+Right", send: "Shift+Right", when: composing}
+    - {accept: minus, send: Page_Up, when: has_menu}
+    - {accept: equal, send: Page_Down, when: has_menu}
+    - {accept: KP_0, send: 0, when: composing}
+    - {accept: KP_1, send: 1, when: composing}
+    - {accept: KP_2, send: 2, when: composing}
+    - {accept: KP_3, send: 3, when: composing}
+    - {accept: KP_4, send: 4, when: composing}
+    - {accept: KP_5, send: 5, when: composing}
+    - {accept: KP_6, send: 6, when: composing}
+    - {accept: KP_7, send: 7, when: composing}
+    - {accept: KP_8, send: 8, when: composing}
+    - {accept: KP_9, send: 9, when: composing}
+    - {accept: KP_Decimal, send: period, when: composing}
+    - {accept: KP_Multiply, send: asterisk, when: composing}
+    - {accept: KP_Add, send: plus, when: composing}
+    - {accept: KP_Subtract, send: minus, when: composing}
+    - {accept: KP_Divide, send: slash, when: composing}
+    - {accept: KP_Enter, send: Return, when: composing}
