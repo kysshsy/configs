@@ -1,6 +1,9 @@
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
+    Alt+1 { spawn "sh" "-c" "$HOME/.config/niri/focus-or-launch wezterm"; }
+    Alt+2 { spawn "sh" "-c" "$HOME/.config/niri/focus-or-launch chrome"; }
+
     // Leave Super+Space free for Fcitx input switching. Cmd+Space is routed
     // to Mod+D by Toshy below, while physical Ctrl+Space reaches Fcitx.
     Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }

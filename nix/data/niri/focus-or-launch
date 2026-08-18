@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${1:-}" in
+  wezterm)
+    app_id_pattern='^(org\.wezfurlong\.wezterm|wezterm|wezterm-gui)$'
+    launch=(wezterm)
+    ;;
+  chrome)
+    app_id_pattern='^(google-chrome|google-chrome-stable)$'
+    launch=(google-chrome)
+    ;;
+  *)
+    exit 2
+    ;;
+esac
+
+window_id="$(${NIRI_MSG:-niri} msg --json windows | jq -r --arg pattern "$app_id_pattern" '
+  [.[] | select((.app_id // "") | test($pattern; "i")) | .id] | first // empty
+')"
+
+if [[ -n "$window_id" ]]; then
+  exec "${NIRI_MSG:-niri}" msg action focus-window --id "$window_id"
+fi
+
+exec "${launch[@]}"
