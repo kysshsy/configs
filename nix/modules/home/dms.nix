@@ -36,10 +36,14 @@ in
   # writable in the XDG directory, but let Home Manager deploy the static
   # plugins themselves.
   xdg.configFile = {
-    "DankMaterialShell/plugins/Calculator".source =
-      ../../data/dms/config/plugins/Calculator;
-    "DankMaterialShell/plugins/WebSearch".source =
-      ../../data/dms/config/plugins/WebSearch;
+    "DankMaterialShell/plugins/Calculator" = {
+      source = ../../data/dms/config/plugins/Calculator;
+      force = true;
+    };
+    "DankMaterialShell/plugins/WebSearch" = {
+      source = ../../data/dms/config/plugins/WebSearch;
+      force = true;
+    };
   };
 
   home.activation.migrateDmsState = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
