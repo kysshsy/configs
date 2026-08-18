@@ -22,3 +22,51 @@ This repository supports more than NixOS.
   track it in the current Git worktree; prefer an out-of-store symlink to that
   source for mutable runtime configuration, while avoiding ownership conflicts
   with Home Manager.
+
+## Nix Structure and Ownership
+
+- `flake.nix` is the public entry point. It defines external inputs and
+  exposes machine targets; it should not be the main place where a machine's
+  feature selection is listed.
+- `nix/hosts/<machine>/default.nix` is the final composition for one machine.
+  It selects that machine's hardware profile, NixOS modules, and the Home
+  Manager modules used by its users.
+- A host directory represents a final deployable target exposed by the Flake.
+  Keep its name short and oriented toward the machine's role or user-facing
+  function, such as `workstation` or `niri-desktop`; it does not need to match
+  the hardware profile name. Hardware profiles may use more descriptive names
+  that include architecture, platform, virtualization, or storage details.
+- `nix/hardware/` contains machine facts such as generated filesystem,
+  bootloader, kernel-module, and virtualization settings. Do not put desktop,
+  application, or user policy in hardware profiles.
+- System modules belong under `nix/modules/nixos/` and must use native NixOS
+  options where those options exist. Keep system services, hardware access,
+  users, networking, and boot configuration at this level.
+- User modules belong under `nix/modules/home/` and must be loaded through
+  Home Manager. Organize them by application or independent function, such as
+  `neovim.nix`, `wezterm.nix`, or `git.nix`; do not create broad `editor` or
+  `terminal` buckets merely for categorization. If an application's module is
+  complex, use `nix/modules/home/<app>/default.nix` and keep its related files
+  in that directory.
+- An application does not need a module just because it is installed. Keep
+  packages with no configuration in the relevant host or user package list.
+  Create an application module when it has declarative options, service
+  configuration, environment setup, or repository configuration to link.
+- `modules` should usually contain one application or one independent feature
+  per file. Small tools that only need to be installed and have no meaningful
+  configuration may be grouped in a clearly named category module, such as
+  `cli-tools.nix`; do not create one module per trivial command.
+- Portable application configuration remains in the top-level Stow groups
+  (`shell/`, `editor/`, `terminal/`, and similar). A Home Manager module may
+  reference those repository files with relative paths; do not duplicate the
+  same dotfile under `nix/` solely for NixOS.
+- Keep operating-system-specific modules separate. NixOS modules belong under
+  `nix/modules/nixos/`; future nix-darwin modules belong under
+  `nix/modules/darwin/`. Shared user-level configuration can live under
+  `nix/modules/home/`, but it must not assume NixOS-only options.
+- Software installation is host-specific. A Linux host may install an
+  application with Nix, while a Darwin host may install it with Homebrew;
+  both hosts can still load the same Home Manager application configuration.
+- Keep one repository-level `flake.lock` for compatible targets. Hardware and
+  host selection belong in the target configuration, not in separate lock
+  files, unless a platform genuinely requires an independent dependency set.
