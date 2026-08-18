@@ -42,9 +42,27 @@ in
       ../../data/dms/config/plugins/WebSearch;
   };
 
-  home.activation.seedDmsRuntimeConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.migrateDmsState = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+    dms_state_dir="${config.home.homeDirectory}/.local/state/DankMaterialShell"
+    dms_legacy_state_dir="${config.home.homeDirectory}/configs/nix/data/dms/state"
+    dms_state_staging="${config.home.homeDirectory}/.local/state/.dank-material-shell-state-migration"
+
+    if [ -L "$dms_state_dir" ] && [ -d "$dms_legacy_state_dir" ] && [ ! -e "$dms_state_staging" ]; then
+      install -d -m 700 "$dms_state_staging"
+      cp -a "$dms_legacy_state_dir"/. "$dms_state_staging"/
+    fi
+  '';
+
+  home.activation.seedDmsRuntimeConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     dms_config_dir="${config.xdg.configHome}/DankMaterialShell"
+    dms_state_dir="${config.home.homeDirectory}/.local/state/DankMaterialShell"
+    dms_state_staging="${config.home.homeDirectory}/.local/state/.dank-material-shell-state-migration"
+
     install -d -m 700 "$dms_config_dir"
+
+    if [ -d "$dms_state_staging" ] && [ ! -e "$dms_state_dir" ]; then
+      mv "$dms_state_staging" "$dms_state_dir"
+    fi
 
     if [ ! -e "$dms_config_dir/settings.json" ]; then
       install -Dm644 ${../../data/dms/config/settings.json} "$dms_config_dir/settings.json"
