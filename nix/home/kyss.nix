@@ -74,6 +74,12 @@ in
     };
   };
 
+  # Keep the mutable Toshy configuration reviewable in this repository while
+  # exposing it at Toshy's runtime path without copying it into the Nix store.
+  xdg.configFile."toshy/toshy_config.py".source =
+    config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/configs/nix/toshy/toshy_config.py";
+
   # The DMS package/version comes from the flake input. Its mutable settings
   # live in this checkout through out-of-store directory symlinks, so changes
   # made in the DMS UI are visible to Git immediately.

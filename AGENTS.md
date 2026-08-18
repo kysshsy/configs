@@ -17,4 +17,8 @@ This repository supports more than NixOS.
   conditionally loading host-specific settings when that improves portability.
 - Do not use Stow on NixOS for paths owned by Home Manager. Avoid overlapping
   ownership; Nix should reference the repository source directly instead.
-
+- When adding or changing software configuration, decide whether it should be
+  version-controlled. If it should, add the source to this repository and
+  track it in the current Git worktree; prefer an out-of-store symlink to that
+  source for mutable runtime configuration, while avoiding ownership conflicts
+  with Home Manager.
