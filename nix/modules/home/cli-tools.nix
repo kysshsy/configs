@@ -17,6 +17,7 @@
     ugrep
     hwinfo
     pass
+    python3
     uv
   ];
 }
