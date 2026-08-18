@@ -1,1 +1,11 @@
-{}
+{
+  "calculator": {
+    "enabled": true,
+    "trigger": "="
+  },
+  "webSearch": {
+    "enabled": true,
+    "noTrigger": true,
+    "trigger": "g"
+  }
+}

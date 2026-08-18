@@ -17,14 +17,14 @@ FocusScope {
         spacing: Theme.spacingL
 
         Text {
-            text: "Web Search Plugin"
+            text: "Quick Links Plugin"
             font.pixelSize: 18
             font.weight: Font.Bold
             color: "#FFFFFF"
         }
 
         Text {
-            text: "Type the trigger followed by a search term in Spotlight, then press Enter."
+            text: "Type a configured keyword in Spotlight to open a website. Use g followed by text for a Google search."
             font.pixelSize: 14
             color: "#CCFFFFFF"
             wrapMode: Text.WordWrap
@@ -36,7 +36,7 @@ FocusScope {
             spacing: Theme.spacingM
 
             Text {
-                text: "Trigger"
+                text: "Google search URL template"
                 font.pixelSize: 14
                 color: "#FFFFFF"
             }
@@ -50,23 +50,6 @@ FocusScope {
                 backgroundColor: "#30FFFFFF"
                 textColor: "#FFFFFF"
                 onTextEdited: saveSettings("trigger", text.trim() || "g")
-            }
-
-            Text {
-                text: "Example: g nixos"
-                font.pixelSize: 12
-                color: "#AAFFFFFF"
-            }
-        }
-
-        Column {
-            width: parent.width - 32
-            spacing: Theme.spacingM
-
-            Text {
-                text: "Search URL template"
-                font.pixelSize: 14
-                color: "#FFFFFF"
             }
 
             DankTextField {
@@ -88,6 +71,50 @@ FocusScope {
                 width: parent.width
             }
         }
+
+        Column {
+            width: parent.width - 32
+            spacing: Theme.spacingM
+
+            Text {
+                text: "Website shortcuts"
+                font.pixelSize: 14
+                color: "#FFFFFF"
+            }
+
+            TextEdit {
+                id: linksEditor
+                width: parent.width
+                height: 180
+                text: loadSettings("linksJson", defaultLinks)
+                color: "#FFFFFF"
+                font.pixelSize: 13
+                wrapMode: TextEdit.Wrap
+                selectByMouse: true
+                persistentSelection: true
+                textFormat: TextEdit.PlainText
+                onTextChanged: {
+                    if (activeFocus)
+                        saveSettings("linksJson", text);
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: -8
+                    z: -1
+                    radius: 4
+                    color: "#30FFFFFF"
+                }
+            }
+
+            Text {
+                text: "Each entry needs keyword and url; name and icon are optional."
+                font.pixelSize: 12
+                color: "#AAFFFFFF"
+                wrapMode: Text.WordWrap
+                width: parent.width
+            }
+        }
     }
 
     function saveSettings(key, value) {
@@ -100,4 +127,6 @@ FocusScope {
             return pluginService.loadPluginData("webSearch", key, defaultValue);
         return defaultValue;
     }
+
+    readonly property string defaultLinks: "[{\"keyword\":\"gmail\",\"name\":\"Gmail\",\"url\":\"https://mail.google.com/\"},{\"keyword\":\"calendar\",\"name\":\"Google Calendar\",\"url\":\"https://calendar.google.com/\"}]"
 }

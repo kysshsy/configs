@@ -1,8 +1,11 @@
-# Web Search Plugin
+# Quick Links Plugin
 
-Open a configurable web search from DMS Spotlight.
+Open configured websites from DMS Spotlight.
 
-The default trigger is `g`. For example, type `g linux keyboard` and press
-Enter to open the search in the default browser. The search URL can be changed
-in DMS Settings -> Plugins -> Web Search; `%s` is replaced with the URL-encoded
-search term.
+Type `gmail` and press Enter to open Gmail, or `calendar` to open Google
+Calendar. The plugin runs without a prefix and only returns exact configured
+keyword matches. Shortcuts are configured in DMS Settings -> Plugins -> Quick
+Links.
+
+The default `g` trigger also supports Google searches, for example `g linux
+keyboard`. Each shortcut has a keyword and URL; name and icon are optional.

@@ -1,8 +1,8 @@
 {
     "id": "webSearch",
-    "name": "Web Search",
-    "description": "Open a configurable web search from the launcher",
-    "version": "0.1.0",
+    "name": "Quick Links",
+    "description": "Open configured websites and Google searches from the launcher",
+    "version": "0.2.0",
     "author": "kyss",
     "icon": "search",
     "type": "launcher",
