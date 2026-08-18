@@ -179,12 +179,6 @@ in
   xdg.dataFile = {
     "icons/hicolor/scalable/apps/fcitx-rime.svg".source =
       "${pkgs.fcitx5-rime}/share/icons/hicolor/scalable/apps/org.fcitx.Fcitx5.fcitx-rime.svg";
-    "fcitx5/rime/default.custom.yaml".text = ''
-      patch:
-        __include: rime_ice_suggestion:/
-        schema_list:
-          - schema: double_pinyin_flypy
-    '';
     "fcitx5/rime/double_pinyin_flypy.custom.yaml".text = ''
       patch:
         "switches/@2/reset": 0

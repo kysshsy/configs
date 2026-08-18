@@ -8,8 +8,8 @@ config.color_scheme = 'Dracula+'
 config.font = wezterm.font('DejaVu Sans Mono',{})
 
 -- macOS already has native Cmd+T/W and Cmd+1..8 bindings. On Linux Toshy
--- reserves Ctrl+Shift+1..8 as the destination for a real Cmd+number, keeping
--- physical Ctrl+number available to terminal applications.
+-- reserves Ctrl+Alt+1..8 as the destination for a real Cmd+number. Ctrl+Shift
+-- is intentionally avoided because Fcitx/Rime uses it for input toggles.
 if not wezterm.target_triple:find('apple%-darwin') then
   config.keys = {}
   for i = 1, 8 do
@@ -20,7 +20,7 @@ if not wezterm.target_triple:find('apple%-darwin') then
     })
     table.insert(config.keys, {
       key = tostring(i),
-      mods = 'CTRL|SHIFT',
+      mods = 'CTRL|ALT',
       action = act.ActivateTab(i - 1),
     })
   end

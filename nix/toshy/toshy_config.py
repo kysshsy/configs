@@ -4021,10 +4021,14 @@ keymap("User hardware keys", {
     # PUT UNIVERSAL REMAPS FOR HARDWARE KEYS HERE
     # KEYMAP WILL BE ACTIVE IN ALL DESKTOP ENVIRONMENTS/DISTROS
 
-    # Niri receives Super+Space for its DMS Spotlight binding. Toshy converts
-    # a real Apple Cmd to right Ctrl for application shortcuts, so restore
-    # Super only for this compositor-facing shortcut.
-    C("RC-Space"):              [iEF2NT(), C("Super-Space")],
+    # Keep Cmd+Space as Spotlight without stealing physical Ctrl+Space,
+    # which Fcitx uses for input switching. Niri's Mod+D is the launcher.
+    C("RC-Space"):              [iEF2NT(), C("Super-D")],
+
+    # In Toshy's GUI modmap a physical left Ctrl is represented as Super.
+    # Niri has no desktop input-source shortcut for Toshy to target, so send
+    # it back to Fcitx explicitly instead of leaving Ctrl+Space unbound.
+    C("Super-Space"):           [bind, C("C-Space")],
 
 }, when = lambda ctx:
     cnfg.screen_has_focus and
@@ -4032,16 +4036,16 @@ keymap("User hardware keys", {
 )
 
 keymap("Terminal Cmd tab navigation", {
-    # Keep Cmd+1..8 as terminal tab selection without making physical
-    # Ctrl+1..8 tab shortcuts. WezTerm listens for these target combinations.
-    C("RC-1"):                  C("C-Shift-1"),
-    C("RC-2"):                  C("C-Shift-2"),
-    C("RC-3"):                  C("C-Shift-3"),
-    C("RC-4"):                  C("C-Shift-4"),
-    C("RC-5"):                  C("C-Shift-5"),
-    C("RC-6"):                  C("C-Shift-6"),
-    C("RC-7"):                  C("C-Shift-7"),
-    C("RC-8"):                  C("C-Shift-8"),
+    # Keep Cmd+1..8 as terminal tab selection. Do not use Ctrl+Shift here:
+    # Rime reserves Ctrl+Shift+3/4 for punctuation/traditionalization.
+    C("RC-1"):                  C("C-Alt-1"),
+    C("RC-2"):                  C("C-Alt-2"),
+    C("RC-3"):                  C("C-Alt-3"),
+    C("RC-4"):                  C("C-Alt-4"),
+    C("RC-5"):                  C("C-Alt-5"),
+    C("RC-6"):                  C("C-Alt-6"),
+    C("RC-7"):                  C("C-Alt-7"),
+    C("RC-8"):                  C("C-Alt-8"),
 
 }, when = lambda ctx:
     cnfg.screen_has_focus and
