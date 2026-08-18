@@ -1,6 +1,7 @@
-{ ... }:
+{ config, ... }:
 
 {
   home.file.".codex/config.toml".source =
-    ../../../agentic/.codex/config.toml;
+    config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/configs/agentic/.codex/config.toml";
 }

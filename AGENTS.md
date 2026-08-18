@@ -19,9 +19,31 @@ This repository supports more than NixOS.
   ownership; Nix should reference the repository source directly instead.
 - When adding or changing software configuration, decide whether it should be
   version-controlled. If it should, add the source to this repository and
-  track it in the current Git worktree; prefer an out-of-store symlink to that
-  source for mutable runtime configuration, while avoiding ownership conflicts
-  with Home Manager.
+  track it in the current Git worktree. Use an out-of-store symlink for mutable
+  runtime configuration only when application-written changes are intentionally
+  version-controlled; otherwise keep the application's runtime file writable
+  and avoid overlapping ownership with Home Manager.
+
+## Application-Writable Configuration
+
+- Treat files linked from `/nix/store` as immutable. Static configuration that
+  an application only reads may be managed directly by Nix or Home Manager.
+- If an application saves settings, rewrites its configuration, or exposes a
+  settings UI that persists changes, do not manage that exact runtime path as
+  a Home Manager store link. Let the application own a real writable file in
+  its XDG configuration directory or application data directory.
+- Prefer an application-supported include or writable override. Otherwise,
+  seed a writable file only when it does not exist and leave subsequent edits
+  to the application. Use an out-of-store symlink only when writing back to the
+  repository is an intentional choice.
+- Keep application history, databases, state, and caches in writable user
+  directories such as `~/.local/state`, `~/.local/share`, and `~/.cache`; do
+  not version-control them unless there is a specific reason.
+- Identify applications needing this treatment before deployment when
+  possible: check their documentation, inspect `readlink -f` for managed
+  runtime files, and use file-access tracing when behavior is unclear. Do not
+  wait for a write failure if the application is known to self-modify its
+  configuration.
 
 ## Nix Structure and Ownership
 
