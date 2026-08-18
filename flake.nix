@@ -18,37 +18,29 @@
 
   outputs = { nixpkgs, home-manager, dms, toshy, ... }:
     let
-      mkNixos = { hardwareModule, configurationName }: nixpkgs.lib.nixosSystem {
+      mkNixos = { targetName, hostModule }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs.configurationName = configurationName;
+        specialArgs = { inherit targetName dms toshy; };
         modules = [
-          hardwareModule
-          ./nix/hosts/nixos-niri
           toshy.nixosModules.toshy
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit toshy; };
-            home-manager.users.kyss = {
-              imports = [
-                dms.homeModules.dank-material-shell
-                toshy.homeManagerModules.toshy
-                ./nix/home/kyss.nix
-              ];
-            };
           }
+          hostModule
         ];
       };
     in {
       nixosConfigurations = {
-        dev-bare-metal = mkNixos {
-          hardwareModule = ./nix/hardware/dev-bare-metal.nix;
-          configurationName = "dev-bare-metal";
+        workstation = mkNixos {
+          targetName = "workstation";
+          hostModule = ./nix/hosts/workstation;
         };
-        pve-niri-vm = mkNixos {
-          hardwareModule = ./nix/hardware/pve-niri-vm.nix;
-          configurationName = "pve-niri-vm";
+        pve-guest = mkNixos {
+          targetName = "pve-guest";
+          hostModule = ./nix/hosts/pve-guest;
         };
       };
     };

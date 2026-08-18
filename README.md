@@ -46,21 +46,21 @@ stow -Dv -t "$HOME" shell editor terminal
 
 ## NixOS
 
-The root `flake.nix` defines declarative NixOS targets. It intentionally leaves
-the existing Stow groups unchanged; Home Manager imports only portable Git,
-editor, and terminal preferences.
+The root `flake.nix` defines declarative NixOS targets. Each target points to a
+final host entry under `nix/hosts/`; that entry selects its hardware profile,
+system modules under `nix/modules/nixos/`, and Home Manager application modules
+under `nix/modules/home/`.
 
 The repository remains the single source of configuration files:
 
 - On macOS and other conventional hosts, use Stow as documented above.
 - On NixOS, the Flake reads selected files directly from this repository and
   installs their Nix-store links through Home Manager.
-- DMS uses directory links to `nix/dms/config/` and `nix/dms/state/` instead,
+- DMS uses directory links to `nix/data/dms/config/` and `nix/data/dms/state/` instead,
   so changes made in its settings UI are written directly to this checkout and
   appear in `git status`.
 - Never run Stow for a path owned by Home Manager on NixOS. In the current
-  setup those paths are Git, Neovim, Starship, WezTerm, Zellij, tmux, and
-  Codex.
+  setup those paths are Fish, Git, Neovim, Starship, WezTerm, tmux, and Codex.
   Other groups can continue to use Stow once their paths do not overlap.
 
 NixOS intentionally does not consume every dotfile in this repository. The
@@ -71,18 +71,20 @@ automatically obsolete and must not be removed solely for that reason. See
 `AGENTS.md` for the repository maintenance rules.
 
 Hardware-dependent files live in `nix/hardware/`; do not use a configuration
-from one machine on another machine. The available targets are:
+from one machine on another machine. Target names describe the final system
+role, while hardware profile names describe architecture and platform details.
+The available targets are:
 
 | Target | Hardware profile | Use case |
 | --- | --- | --- |
-| `dev-bare-metal` | `nix/hardware/dev-bare-metal.nix` | Current Intel mini-PC, installed directly on Btrfs |
-| `pve-niri-vm` | `nix/hardware/pve-niri-vm.nix` | Former PVE virtual machine using virtio disks |
+| `workstation` | `nix/hardware/x86_64-linux-intel-bare-metal.nix` | Current Intel mini-PC, installed directly on Btrfs |
+| `pve-guest` | `nix/hardware/x86_64-linux-pve-guest.nix` | Former PVE virtual machine using virtio disks |
 
 For example, after changing `editor/.config/nvim/`, rebuild the current
 bare-metal machine with:
 
 ```bash
-sudo nixos-rebuild switch --flake ~/configs#dev-bare-metal
+sudo nixos-rebuild switch --flake ~/configs#workstation
 ```
 
 After the first successful rebuild, the system also provides shortcuts for the
@@ -107,7 +109,7 @@ no GitHub private key is needed:
 nix-shell -p git --run 'git clone https://github.com/kysshsy/configs.git ~/configs'
 cd ~/configs
 nix --extra-experimental-features 'nix-command flakes' flake lock
-sudo nixos-rebuild switch --flake .#dev-bare-metal --option experimental-features 'nix-command flakes'
+sudo nixos-rebuild switch --flake .#workstation --option experimental-features 'nix-command flakes'
 ```
 
 The rebuild turns off SSH password and keyboard-interactive authentication.
