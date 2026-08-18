@@ -24,6 +24,23 @@ This repository supports more than NixOS.
   version-controlled; otherwise keep the application's runtime file writable
   and avoid overlapping ownership with Home Manager.
 
+## Configuration Ownership Policy
+
+- Reusable user-level software configuration, such as Codex, shell, editor, and
+  terminal configuration, should live in the portable repository groups and be
+  installed through symlinks or GNU Stow. On NixOS, Home Manager may reference
+  those same repository files rather than duplicating them under `nix/`.
+- System-integrated desktop software, such as DankMaterialShell (DMS) and Niri,
+  must be configured declaratively with NixOS, Home Manager, or native Nix
+  options. Do not manage their entire configuration directories with
+  out-of-store symlinks merely for convenience.
+- For DMS, Niri, and similar Nix-managed components, keep static configuration
+  under the appropriate `nix/` modules or data files and leave application
+  settings, history, caches, and other mutable runtime state in their normal
+  writable XDG directories. Manage individual third-party plugins with Nix or
+  the application's plugin manager instead of implicitly versioning a whole
+  runtime directory.
+
 ## Application-Writable Configuration
 
 - Treat files linked from `/nix/store` as immutable. Static configuration that
