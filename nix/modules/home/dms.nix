@@ -1,4 +1,4 @@
-{ config, dms, pkgs, ... }:
+{ config, dms, lib, pkgs, ... }:
 
 let
   dmsPackage = dms.packages.${pkgs.system}.dms-shell.overrideAttrs (old: {
@@ -32,15 +32,26 @@ in
 
   home.packages = [ pkgs.adwaita-icon-theme ];
 
-  xdg.configFile."DankMaterialShell" = {
-    source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/configs/nix/data/dms/config";
-    force = true;
+  # DMS writes settings and state while it is running. Keep those runtime files
+  # writable in the XDG directory, but let Home Manager deploy the static
+  # plugins themselves.
+  xdg.configFile = {
+    "DankMaterialShell/plugins/Calculator".source =
+      ../../data/dms/config/plugins/Calculator;
+    "DankMaterialShell/plugins/WebSearch".source =
+      ../../data/dms/config/plugins/WebSearch;
   };
 
-  home.file.".local/state/DankMaterialShell" = {
-    source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/configs/nix/data/dms/state";
-    force = true;
-  };
+  home.activation.seedDmsRuntimeConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    dms_config_dir="${config.xdg.configHome}/DankMaterialShell"
+    install -d -m 700 "$dms_config_dir"
+
+    if [ ! -e "$dms_config_dir/settings.json" ]; then
+      install -Dm644 ${../../data/dms/config/settings.json} "$dms_config_dir/settings.json"
+    fi
+
+    if [ ! -e "$dms_config_dir/plugin_settings.json" ]; then
+      install -Dm644 ${../../data/dms/config/plugin_settings.json} "$dms_config_dir/plugin_settings.json"
+    fi
+  '';
 }
