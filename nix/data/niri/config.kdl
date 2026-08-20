@@ -21,4 +21,11 @@ layout {
     default-column-width { proportion 0.6; }
 }
 
+// Open WezTerm as a fullscreen window. The app-id covers both the native
+// Wayland name and the common fallback reported by WezTerm.
+window-rule {
+    match app-id=r#"^(org\.wezfurlong\.wezterm|wezterm|wezterm-gui)$"#
+    open-fullscreen true
+}
+
 include "niri-shortcuts.kdl"

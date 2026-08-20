@@ -5,7 +5,7 @@
 # These root-level settings must precede every TOML table. Otherwise TOML assigns
 # them to the preceding table and Codex silently keeps its global defaults.
 model_provider = "rightcode"
-model = "gpt-5.6-terra"
+model = "gpt-5.6-luna"
 model_reasoning_effort = "medium"
 disable_response_storage = true
 
@@ -72,6 +72,9 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/kyss/labs/pi"]
+trust_level = "trusted"
+
+[projects."/home/kyss/labs/ai-company"]
 trust_level = "trusted"
 
 [tui.model_availability_nux]
