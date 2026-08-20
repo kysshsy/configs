@@ -20,5 +20,6 @@
     proximity-sort
     python3
     uv
+    vtsls
   ];
 }

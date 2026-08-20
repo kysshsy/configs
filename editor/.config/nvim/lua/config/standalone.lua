@@ -300,6 +300,11 @@ function M.setup()
 					vim.lsp.enable('ruff')
 				end
 
+				-- TypeScript and JavaScript
+				if vim.fn.executable('vtsls') == 1 then
+					vim.lsp.enable('vtsls')
+				end
+
 				-- Global mappings.
 				-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 				vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
