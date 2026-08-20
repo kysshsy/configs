@@ -5,8 +5,8 @@
 # These root-level settings must precede every TOML table. Otherwise TOML assigns
 # them to the preceding table and Codex silently keeps its global defaults.
 model_provider = "rightcode"
-model = "gpt-5.6-luna"
-model_reasoning_effort = "medium"
+model = "gpt-5.6-terra"
+model_reasoning_effort = "high"
 disable_response_storage = true
 
 # Run commands automatically within the permission profile below. Codex must

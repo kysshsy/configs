@@ -17,6 +17,7 @@
     ugrep
     hwinfo
     pass
+    proximity-sort
     python3
     uv
   ];
