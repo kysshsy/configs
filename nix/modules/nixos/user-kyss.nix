@@ -7,6 +7,7 @@
     isNormalUser = true;
     description = "kyss";
     shell = pkgs.fish;
+    linger = true;
     extraGroups = [ "networkmanager" "wheel" "uinput" ];
   };
 }
