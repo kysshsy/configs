@@ -1,11 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, userName, ... }:
 
 {
   programs.fish.enable = true;
 
-  users.users.kyss = {
+  users.users.${userName} = {
     isNormalUser = true;
-    description = "kyss";
+    description = userName;
     shell = pkgs.fish;
     linger = true;
     extraGroups = [ "networkmanager" "wheel" "uinput" ];

@@ -1,8 +1,8 @@
-{ ... }:
+{ userName, ... }:
 
 {
-  home.username = "kyss";
-  home.homeDirectory = "/home/kyss";
+  home.username = userName;
+  home.homeDirectory = "/home/${userName}";
   home.stateVersion = "26.05";
 
   imports = [

@@ -1,4 +1,4 @@
-{ dms, toshy, ... }:
+{ dms, toshy, userName, ... }:
 
 {
   imports = [
@@ -11,7 +11,7 @@
     ../../modules/nixos/ssh.nix
   ];
 
-  home-manager.users.kyss = {
+  home-manager.users.${userName} = {
     imports = [
       dms.homeModules.dank-material-shell
       toshy.homeManagerModules.toshy

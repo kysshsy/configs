@@ -1,5 +1,8 @@
-{ targetName, pkgs, ... }:
+{ targetName, pkgs, userName, ... }:
 
+let
+  configurationDirectory = "/home/${userName}/configs";
+in
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -53,13 +56,13 @@
     (writeShellApplication {
       name = "nix-check";
       text = ''
-        exec nix flake check --no-write-lock-file /home/kyss/configs
+        exec nix flake check --no-write-lock-file ${configurationDirectory}
       '';
     })
     (writeShellApplication {
       name = "nix-rebuild";
       text = ''
-        exec sudo nixos-rebuild switch --flake /home/kyss/configs#${targetName} "$@"
+        exec sudo nixos-rebuild switch --flake ${configurationDirectory}#${targetName} "$@"
       '';
     })
   ];

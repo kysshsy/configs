@@ -23,28 +23,31 @@
 
   outputs = { nixpkgs, home-manager, nix-darwin, nix-homebrew, dms, toshy, ... }:
     let
+      userName = "kyss";
       mkNixos = { targetName, hostModule }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit targetName dms toshy; };
+        specialArgs = { inherit targetName userName dms toshy; };
         modules = [
           toshy.nixosModules.toshy
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit dms toshy; };
+            home-manager.extraSpecialArgs = { inherit userName dms toshy; };
           }
           hostModule
         ];
       };
       mkDarwin = { hostModule }: nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
+        specialArgs = { inherit userName; };
         modules = [
           nix-homebrew.darwinModules.nix-homebrew
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit userName; };
           }
           hostModule
         ];

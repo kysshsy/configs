@@ -1,12 +1,15 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, userName, ... }:
 
+let
+  homeDirectory = "/Users/${userName}";
+in
 {
   # Change this if this configuration is deployed to a differently named Mac.
   networking.hostName = "macos";
   networking.computerName = "macos";
 
   # Required by nix-darwin's activation scripts when they run through sudo.
-  system.primaryUser = "kyss";
+  system.primaryUser = userName;
   system.stateVersion = 6;
 
   # Make the shared WezTerm font available to native macOS applications.
@@ -16,11 +19,11 @@
   programs.fish.enable = true;
   programs.fish.package = pkgs.fish;
   environment.shells = [ pkgs.fish ];
-  users.users.kyss.shell = pkgs.fish;
+  users.users.${userName}.shell = pkgs.fish;
   # The account predates nix-darwin, so update its Directory Services record
   # explicitly instead of relying on user creation to apply the shell setting.
   system.activationScripts.postActivation.text = ''
-    dscl . -create /Users/kyss UserShell /run/current-system/sw/bin/fish
+    dscl . -create ${homeDirectory} UserShell /run/current-system/sw/bin/fish
   '';
 
   # Determinate Nix owns the Nix daemon and installation on this machine.
@@ -28,7 +31,7 @@
 
   nix-homebrew = {
     enable = true;
-    user = "kyss";
+    user = userName;
     autoMigrate = true;
   };
 
@@ -79,11 +82,11 @@
 
   # Keep Codex user configuration shared with the NixOS Home Manager setup,
   # without importing Linux-only desktop modules on macOS.
-  home-manager.users.kyss = {
-    home.username = "kyss";
+  home-manager.users.${userName} = {
+    home.username = userName;
     # nix-darwin contributes a null default for this option; force the actual
     # Darwin home directory so Home Manager can evaluate the user profile.
-    home.homeDirectory = lib.mkForce "/Users/kyss";
+    home.homeDirectory = lib.mkForce homeDirectory;
     home.stateVersion = "26.05";
 
     imports = [
