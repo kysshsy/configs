@@ -3,6 +3,7 @@
 let
   homeDirectory = "/Users/${userName}";
   configurationDirectory = "${homeDirectory}/configs";
+  localProxyUrl = "http://127.0.0.1:7890";
   masAppIds = [
     "1552536109" # PasteNow
     "6450262949" # Longshot
@@ -22,11 +23,34 @@ in
   # Make the shared WezTerm font available to native macOS applications.
   fonts.packages = [ pkgs.dejavu_fonts ];
 
+  # `sudo` removes terminal proxy variables. Probe the local VPN proxy for
+  # each command and pass it through so nix-darwin's Brew Bundle activation
+  # can use it without leaving a stale proxy when the VPN client is stopped.
   environment.systemPackages = [
     (pkgs.writeShellApplication {
       name = "nix-rebuild";
       text = ''
+        if curl --silent --output /dev/null --connect-timeout 1 --max-time 1 ${localProxyUrl}; then
+          exec sudo env \
+            http_proxy=${localProxyUrl} https_proxy=${localProxyUrl} \
+            HTTP_PROXY=${localProxyUrl} HTTPS_PROXY=${localProxyUrl} \
+            nix run nix-darwin -- switch --flake ${configurationDirectory}#macos "$@"
+        fi
+
         exec sudo nix run nix-darwin -- switch --flake ${configurationDirectory}#macos "$@"
+      '';
+    })
+    (pkgs.writeShellApplication {
+      name = "nix-build";
+      text = ''
+        if curl --silent --output /dev/null --connect-timeout 1 --max-time 1 ${localProxyUrl}; then
+          exec env \
+            http_proxy=${localProxyUrl} https_proxy=${localProxyUrl} \
+            HTTP_PROXY=${localProxyUrl} HTTPS_PROXY=${localProxyUrl} \
+            nix build --no-write-lock-file ${configurationDirectory}#darwinConfigurations.macos.system "$@"
+        fi
+
+        exec nix build --no-write-lock-file ${configurationDirectory}#darwinConfigurations.macos.system "$@"
       '';
     })
     (pkgs.writeShellApplication {
@@ -72,12 +96,15 @@ in
     enable = true;
     # Native macOS GUI applications belong to Homebrew casks; keep Nix focused
     # on reproducible command-line and developer tooling.
+    taps = [ "nikitabobko/tap" ];
     brews = [ "mas" ];
     casks = [
+      "nikitabobko/tap/aerospace"
       "codex"
       "visual-studio-code"
       "google-chrome"
       "mos"
+      "betterdisplay"
     ];
     # `mas` 7 needs root for App Store installs, while nix-darwin runs Brew
     # Bundle as the primary user. Use `mas-install-apps` after deployment.
@@ -90,7 +117,13 @@ in
   };
 
   # Disable the global Cmd+Space Spotlight shortcut while leaving Spotlight
-  # indexing and manual searches available.
+  # indexing and manual searches available. Keep both search assistants out of
+  # the menu bar as well.
+  system.defaults.CustomUserPreferences."com.apple.Siri".StatusMenuVisible = false;
+  system.defaults.CustomUserPreferences."com.apple.Spotlight".MenuItemHidden = true;
+  # Do not reveal the desktop and move application windows aside when the
+  # wallpaper is clicked.
+  system.defaults.CustomUserPreferences."com.apple.WindowManager".EnableStandardClickToShowDesktop = false;
   system.defaults.CustomUserPreferences."com.apple.symbolichotkeys" = {
     AppleSymbolicHotKeys."64" = {
       enabled = false;
@@ -120,6 +153,8 @@ in
       ../../modules/home/cli-tools.nix
       ../../modules/home/nodejs.nix
       ../../modules/home/fish.nix
+      ../../modules/home/proxy.nix
+      ../../modules/home/aerospace.nix
       ../../modules/home/git.nix
       ../../modules/home/neovim.nix
       ../../modules/home/starship.nix
@@ -128,9 +163,14 @@ in
       ../../modules/home/codex.nix
     ];
 
+    localProxy = {
+      enable = true;
+      url = localProxyUrl;
+    };
+
     programs.home-manager.enable = true;
   };
 
-  # Preserve any pre-existing Codex files during the first activation.
-  home-manager.backupFileExtension = "codex-backup";
+  # Preserve existing user-managed files before Home Manager replaces them.
+  home-manager.backupFileExtension = "home-manager-backup";
 }
