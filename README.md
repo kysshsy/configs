@@ -1,6 +1,6 @@
 # configs
 
-个人配置仓库，包含可移植 dotfiles 与 NixOS/Home Manager 配置。
+个人配置仓库，包含可移植 dotfiles、NixOS、Home Manager 与 nix-darwin 配置。
 
 ## 目录结构
 
@@ -37,6 +37,26 @@ stow -Dv -t "$HOME" shell editor terminal
 Stow 不会覆盖目标位置已有的普通文件；发生冲突时，请先备份或移除原文件。
 
 在 NixOS 上，不要对 Home Manager 已管理的路径使用 Stow。
+
+## macOS
+
+`macos` target 使用 nix-darwin 管理系统，使用 nix-homebrew 安装及接管
+Homebrew，并由 nix-darwin 声明安装与更新 Homebrew casks `codex`、
+`visual-studio-code`、`google-chrome` 和 `mos`。目前目标为 Apple Silicon Mac，用户名为
+`kyss`；部署前请按实际机器修改
+`nix/hosts/macos/default.nix` 中的用户名和主机名。
+
+先安装 [Determinate Nix](https://docs.determinate.systems/)，然后在仓库根目录
+执行首次部署：
+
+```bash
+sudo -H nix run nix-darwin -- switch --flake ~/configs#macos
+```
+
+后续可运行 `darwin-rebuild switch --flake ~/configs#macos` 同步 Homebrew 和
+Codex。Codex 只由 Home Manager 接管 `~/.codex/config.toml` 和
+`~/.codex/AGENTS.md`；历史记录、认证信息、数据库、缓存和插件仍由 Codex
+保存在用户目录中。该配置不会清理未在 Nix 中声明的其他 Homebrew 软件。
 
 ## NixOS
 

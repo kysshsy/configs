@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -15,11 +15,11 @@
     ripgrep
     tldr
     ugrep
-    hwinfo
     pass
-    proximity-sort
     python3
     uv
     vtsls
-  ];
+  ] ++ lib.optionals pkgs.stdenv.isLinux [
+    hwinfo
+  ] ++ [ proximity-sort ];
 }
