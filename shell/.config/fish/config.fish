@@ -80,6 +80,33 @@ if test -f ~/.config/fish/secrets.fish
   source ~/.config/fish/secrets.fish
 end
 
+# Follow the local VPN client's lifecycle without leaving a stale proxy in
+# long-lived terminals. The address is supplied by the host configuration.
+function __refresh_local_http_proxy --on-event fish_prompt
+    if not status --is-interactive
+        return
+    end
+
+    if set -q LOCAL_HTTP_PROXY_DISABLED; or not set -q LOCAL_HTTP_PROXY_URL
+        return
+    end
+
+    if command curl --silent --output /dev/null --connect-timeout 1 --max-time 1 "$LOCAL_HTTP_PROXY_URL"
+        set -gx http_proxy "$LOCAL_HTTP_PROXY_URL"
+        set -gx https_proxy "$LOCAL_HTTP_PROXY_URL"
+        set -gx HTTP_PROXY "$LOCAL_HTTP_PROXY_URL"
+        set -gx HTTPS_PROXY "$LOCAL_HTTP_PROXY_URL"
+        set -g __local_http_proxy_managed 1
+    else if set -q __local_http_proxy_managed
+        set -e http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+        set -e __local_http_proxy_managed
+    end
+end
+
+if status --is-interactive
+    __refresh_local_http_proxy
+end
+
 
 ## PATH tweaks and prompt / command-not-found
 # npm's user-level global binaries, including Codex CLI.

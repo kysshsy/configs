@@ -73,7 +73,10 @@ function proxy --description "Control a running Mihomo controller"
             command curl --silent --show-error --fail $authorization "$controller/configs" | jq '{mode, port, "mixed-port": ."mixed-port", "external-controller": ."external-controller"}'
 
         case on
-            set -l proxy_url "http://127.0.0.1:7890"
+            set -l proxy_url "$LOCAL_HTTP_PROXY_URL"
+            if test -z "$proxy_url"
+                set proxy_url "http://127.0.0.1:7890"
+            end
             if test (count $argv) -gt 1
                 set proxy_url "$argv[2]"
             end
@@ -86,10 +89,14 @@ function proxy --description "Control a running Mihomo controller"
             set -gx https_proxy "$proxy_url"
             set -gx HTTP_PROXY "$proxy_url"
             set -gx HTTPS_PROXY "$proxy_url"
+            set -e LOCAL_HTTP_PROXY_DISABLED
+            set -g __local_http_proxy_managed 1
             echo "Enabled terminal proxy: $proxy_url"
 
         case off
             set -e http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+            set -gx LOCAL_HTTP_PROXY_DISABLED 1
+            set -e __local_http_proxy_managed
             echo "Disabled terminal proxy for this shell"
 
         case subscriptions providers
