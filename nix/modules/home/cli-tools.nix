@@ -5,6 +5,9 @@
     awscli2
     gh
     bat
+    # `rustup` supplies the `cargo` and `rustc` command proxies, then manages
+    # the selected Rust toolchain consistently on macOS and Linux.
+    rustup
     eza
     fastfetch
     fd
