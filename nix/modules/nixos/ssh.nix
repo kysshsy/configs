@@ -3,7 +3,8 @@
     enable = true;
     settings = {
       KbdInteractiveAuthentication = false;
-      PasswordAuthentication = false;
+      PasswordAuthentication = true;
+      AuthorizedKeysFile = ".ssh/authorized_keys";
       PermitRootLogin = "no";
     };
   };
