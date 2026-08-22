@@ -103,6 +103,8 @@ in
       "google-chrome"
       "mos"
       "betterdisplay"
+      "obsidian"
+      "wezterm"
     ];
     # `mas` 7 needs root for App Store installs, while nix-darwin runs Brew
     # Bundle as the primary user. Use `mas-install-apps` after deployment.
