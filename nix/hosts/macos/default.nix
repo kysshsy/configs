@@ -2,6 +2,13 @@
 
 let
   homeDirectory = "/Users/${userName}";
+  configurationDirectory = "${homeDirectory}/configs";
+  masAppIds = [
+    "1552536109" # PasteNow
+    "6450262949" # Longshot
+    "1552555103" # 自动切换输入法Lite
+    "1452453066" # Hidden Bar
+  ];
 in
 {
   # Change this if this configuration is deployed to a differently named Mac.
@@ -14,6 +21,32 @@ in
 
   # Make the shared WezTerm font available to native macOS applications.
   fonts.packages = [ pkgs.dejavu_fonts ];
+
+  environment.systemPackages = [
+    (pkgs.writeShellApplication {
+      name = "nix-rebuild";
+      text = ''
+        exec sudo nix run nix-darwin -- switch --flake ${configurationDirectory}#macos "$@"
+      '';
+    })
+    (pkgs.writeShellApplication {
+      name = "mas-install-apps";
+      text = ''
+        if ! command -v brew >/dev/null; then
+          echo "mas-install-apps: Homebrew is not available" >&2
+          exit 1
+        fi
+
+        mas_bin="$(brew --prefix mas)/bin/mas"
+        if [ ! -x "$mas_bin" ]; then
+          echo "mas-install-apps: install the mas Homebrew formula first" >&2
+          exit 1
+        fi
+
+        exec sudo "$mas_bin" get ${lib.escapeShellArgs masAppIds}
+      '';
+    })
+  ];
 
   # Make the migrated Fish environment the default login shell for the user.
   programs.fish.enable = true;
@@ -46,14 +79,8 @@ in
       "google-chrome"
       "mos"
     ];
-    # Temporarily disabled: `mas` 7 requires root privileges for installation,
-    # while nix-darwin runs Homebrew Bundle as the primary user.
-    # masApps = {
-    #   "PasteNow - 剪贴板工具" = 1552536109;
-    #   "Longshot - 截图 & OCR文字识别" = 6450262949;
-    #   "自动切换输入法Lite" = 1552555103;
-    #   "Hidden Bar" = 1452453066;
-    # };
+    # `mas` 7 needs root for App Store installs, while nix-darwin runs Brew
+    # Bundle as the primary user. Use `mas-install-apps` after deployment.
     onActivation = {
       autoUpdate = true;
       upgrade = true;

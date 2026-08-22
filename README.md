@@ -39,6 +39,8 @@ stow -Dv -t "$HOME" shell editor terminal
 sudo -H nix run nix-darwin -- switch --flake ~/configs#macos
 ```
 
+登录 App Store 后，运行 `mas-install-apps` 安装已声明的 App Store 应用。
+
 ## NixOS
 
 部署桌面主机：
