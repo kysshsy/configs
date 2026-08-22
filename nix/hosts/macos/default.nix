@@ -96,10 +96,8 @@ in
     enable = true;
     # Native macOS GUI applications belong to Homebrew casks; keep Nix focused
     # on reproducible command-line and developer tooling.
-    taps = [ "nikitabobko/tap" ];
     brews = [ "mas" ];
     casks = [
-      "nikitabobko/tap/aerospace"
       "codex"
       "visual-studio-code"
       "google-chrome"
@@ -154,7 +152,6 @@ in
       ../../modules/home/nodejs.nix
       ../../modules/home/fish.nix
       ../../modules/home/proxy.nix
-      ../../modules/home/aerospace.nix
       ../../modules/home/git.nix
       ../../modules/home/neovim.nix
       ../../modules/home/starship.nix
